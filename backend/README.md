@@ -32,10 +32,11 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 
 ## 🛠️ Démarrage (Docker)
 1. Créer `.env` depuis `.env.example` (DB, SECRET_KEY, JWT, S3).
-2. `docker compose up --build api` pour lancer l’API et Postgres.
-3. `docker compose exec api python manage.py migrate` puis `createsuperuser`.
-4. Importer les données de localisation de base (script management command à prévoir).
-5. Vérifier l’API : `http://localhost:8000/api/health/`.
+2. Définir `DATABASE_URL` (Supabase/PostgreSQL) pour activer la recherche full-text et les index GIN ; sinon SQLite est utilisé pour le dev local.
+3. `docker compose up --build api` pour lancer l’API et Postgres.
+4. `docker compose exec api python manage.py migrate` puis `createsuperuser`.
+5. Importer les données de localisation de base (script management command à prévoir).
+6. Vérifier l’API : `http://localhost:8000/api/health/`.
 
 ---
 # ──────────────────────────────────

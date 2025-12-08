@@ -4,6 +4,8 @@ from __future__ import annotations
 from django.contrib.auth import login
 from django.db import models
 from django.db.models import Q
+from django.db import connection
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
@@ -50,13 +52,28 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
         params = self.request.query_params
         q = params.get("q")
         if q:
-            lowered = q.lower()
-            qs = qs.filter(
-                Q(title__icontains=lowered)
-                | Q(description__icontains=lowered)
-                | Q(zone__name__icontains=lowered)
-                | Q(zone__synonyms__icontains=lowered)
-            )
+            if connection.vendor == "postgresql":
+                search_vector = SearchVector(
+                    "title",
+                    "description",
+                    "zone__name",
+                    "zone__synonyms",
+                    config="french",
+                )
+                search_query = SearchQuery(q, config="french")
+                qs = (
+                    qs.annotate(search_rank=SearchRank(search_vector, search_query))
+                    .filter(search_vector=search_query)
+                    .order_by("-search_rank")
+                )
+            else:
+                lowered = q.lower()
+                qs = qs.filter(
+                    Q(title__icontains=lowered)
+                    | Q(description__icontains=lowered)
+                    | Q(zone__name__icontains=lowered)
+                    | Q(zone__synonyms__icontains=lowered)
+                )
         price_min = params.get("price_min")
         price_max = params.get("price_max")
         if price_min:

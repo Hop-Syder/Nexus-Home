@@ -4,6 +4,8 @@ from __future__ import annotations
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -170,6 +172,18 @@ class Listing(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        indexes = [
+            GinIndex(
+                SearchVector(
+                    "title",
+                    "description",
+                    "zone__name",
+                    "zone__synonyms",
+                    config="french",
+                ),
+                name="listings_fts_idx",
+            )
+        ]
 
     def clean(self) -> None:
         if self.price < 0:
