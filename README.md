@@ -46,7 +46,7 @@ Nexus-Home/
 - Préparation cartographie : stockage latitude/longitude pour future vue carte et recherche par rayon
 
 ## 🗺️ Plan d'exécution
-- Les tâches détaillées par phase (préparation, MVP, recherche avancée, scalabilité) sont dans `plan.md` pour pilotage backlog.
+- Les tâches détaillées par phase (préparation, MVP, recherche avancée, scalabilité) et le design system confort 18–90 ans sont dans `plan.md` pour pilotage backlog et cohérence UX.
 
 ## 🧾 Vérification de conformité
 - La checklist formelle se trouve dans `docs/commission-verification.md` (rôles, critères user/admin, technique, UX).
