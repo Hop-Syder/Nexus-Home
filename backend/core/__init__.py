@@ -1,9 +1,4 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""Domain layer for Nexus-Home housing marketplace (users, listings, locations)."""
 
 # ──────────────────────────────────
 # Hop-Syder Développeur

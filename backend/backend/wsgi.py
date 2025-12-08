@@ -1,9 +1,9 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""WSGI entrypoint for serving the Nexus-Home Django application."""
+import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+application = get_wsgi_application()
 
 # ──────────────────────────────────
 # Hop-Syder Développeur

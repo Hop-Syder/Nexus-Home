@@ -1,9 +1,4 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""Migration package initializer for core app."""
 
 # ──────────────────────────────────
 # Hop-Syder Développeur

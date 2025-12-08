@@ -1,9 +1,12 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""Application configuration for the core Nexus-Home Django app."""
+from django.apps import AppConfig
+
+
+class CoreConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "core"
+    verbose_name = "Nexus-Home Core"
+
 
 # ──────────────────────────────────
 # Hop-Syder Développeur

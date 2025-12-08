@@ -1,9 +1,9 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""ASGI entrypoint for async-capable deployments of the Nexus-Home backend."""
+import os
+from django.core.asgi import get_asgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+application = get_asgi_application()
 
 # ──────────────────────────────────
 # Hop-Syder Développeur

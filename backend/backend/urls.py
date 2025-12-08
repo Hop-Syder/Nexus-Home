@@ -1,9 +1,11 @@
-# Pytest configuration shared across HTTP, DB, et Django suites.
-[pytest]
-addopts = -ra --strict-markers
-markers =
-    requirement: marque une exigence métier/fonctionnelle à tracer dans les rapports
-DJANGO_SETTINGS_MODULE = backend.settings
+"""Project URL configuration exposing public and admin APIs for Nexus-Home."""
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/v1/", include("core.urls")),
+]
 
 # ──────────────────────────────────
 # Hop-Syder Développeur
