@@ -1,0 +1,10 @@
+pytest
+requests
+psycopg2-binary
+
+# ──────────────────────────────────
+# Hop-Syder Développeur
+# Full Stack & Data Scientist – Nexus Partners
+# 📧 daoudaabassichristian@gmail.com
+# 🌐 ceo.nexuspartners.xyz
+# ──────────────────────────────────
