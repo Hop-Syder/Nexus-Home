@@ -6,20 +6,23 @@ Plateforme web moderne pour trouver et gérer des annonces de locations de chamb
 ## 📁 Structure des Fichiers (proposée)
 ```
 Nexus-Home/
-├── frontend/                 # Next.js (User + Admin)
-│   ├── apps/user/            # Application publique (recherche, fiches, WhatsApp)
-│   ├── apps/admin/           # Dashboard sécurisé (validation, rôles, analytics légères)
+├── frontend/                 # Next.js (router pages) pour User + Admin
+│   ├── components/           # Layout, thèmes, cartes, filtres
+│   ├── hooks/                # Hooks communs (useTheme)
+│   ├── lib/                  # Client API (NEXT_PUBLIC_API_BASE_URL)
+│   ├── pages/                # Pages publiques + placeholder admin
+│   ├── styles/               # Design tokens confort 18–90 ans
 │   └── README.md             # Consignes d'architecture et setup
 ├── backend/                  # API Django REST Framework
-│   ├── apps/                 # Modules (listings, locations, users, media, logs)
-│   ├── config/               # Paramètres Django, sécurité, logging
+│   ├── core/                 # Modules (listings, locations, users, media, logs)
+│   ├── backend/              # Paramètres Django, sécurité, logging
 │   └── README.md             # Setup backend, migrations, sécurité
 ├── docs/
 │   └── architecture.md       # Design technique, données, API, sécurité
+├── plan.md                   # Plan d'exécution priorisé (tâches phases 0-3)
+├── docs/commission-verification.md # Checklist de conformité (user/admin/search/localisation)
+├── requirements-check.js     # Script Node pour suivre l'état des exigences
 └── README.md                 # Vue d'ensemble, instructions communes
-└── plan.md                   # Plan d'exécution priorisé (tâches phases 0-3)
-└── docs/commission-verification.md # Checklist de conformité (user/admin/search/localisation)
-└── requirements-check.js     # Script Node pour suivre l'état des exigences
 ```
 
 ## 🧱 Stack recommandée

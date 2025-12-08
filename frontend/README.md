@@ -1,34 +1,41 @@
 # Frontend Next.js
 
 ## 🎯 Objectif
-Fournir deux fronts Next.js :
-- **User** (apps/user) : recherche ultra rapide avec filtres, fiches annonces, CTA WhatsApp pré-rempli, accessibilité AA.
-- **Admin** (apps/admin) : dashboard sécurisé pour valider/modifier/supprimer les annonces, gérer les assistants et suivre l’activité.
+Frontend Next.js unique (pages router) prêt pour les interfaces **User** et **Admin** :
+- recherche rapide avec filtres, fiche détail avec CTA WhatsApp
+- design system doux (thème clair/sombre) pour confort 18–90 ans
+- base admin prête à connecter au backend (auth JWT/Session côté Django)
 
-## 🧩 Architecture
-- Monorepo Next.js 14 en TypeScript, router app/
-- UI : Tailwind CSS + shadcn/ui, design system minimal (boutons, cards, inputs, toasts, modals)
-- Formulaires : React Hook Form + Zod (validation côté client + messages accessibles)
-- State : server components + React Query/Server Actions pour les mutations si usage API REST ; cache contrôlé
-- Auth : NextAuth (JWT ou cookies) avec rôles (super admin / assistant) ; routes protégées pour admin
-- Accessibilité : labels, aria-*, focus ring, contrastes ; tests via @testing-library/react et axe
+## 📁 Structure
+```
+frontend/
+├── components/        # Layout, thème, cartes, barre de recherche
+├── hooks/             # Hooks réutilisables (useTheme)
+├── lib/               # Clients API
+├── pages/             # Pages Next (user + admin placeholders)
+├── styles/            # Design tokens et styles globaux
+├── package.json       # Scripts/npm
+└── next.config.js
+```
 
-## 🔍 Recherche & filtres
-- Barre de recherche avec auto-complétion (appel API `/locations/search`)
-- Filtres clés : commune/ville, quartier/zone, prix min/max, type, meublé, durée, disponibilité
-- Résultats paginés avec cartes optimisées (images WebP), CTA WhatsApp : `https://wa.me/<phone>?text=<message>`
+## 🚀 Démarrage
+1. `cd frontend`
+2. `npm install`
+3. Créer `.env.local` si besoin : `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1`
+4. `npm run dev`
 
-## 🧪 Tests recommandés
-- `npm run lint` (eslint) + `npm run type-check` (tsc)
-- Tests unitaires (vitest/jest) sur composants de filtres et cartes d’annonces
-- E2E (playwright) : parcours recherche → fiche → bouton WhatsApp ; login admin → validation annonce
+## 🧪 Tests rapides
+- `npm run lint` (nécessite eslint installé)
 
-## 🚀 Démarrage (proposition)
-1. `cd frontend && npm install`
-2. Créer `.env.local` (NEXTAUTH_SECRET, API_URL, WHATSAPP_DEFAULT_PHONE, etc.)
-3. `npm run dev` pour lancer user/admin ; prévoir `npm run lint` et `npm run test`
+## 🧠 Notes UX
+- Thème clair/sombre doux, switch accessible dans le header
+- Champs larges, labels explicites, boutons ≥ 40px de hauteur
+- CTA WhatsApp prérempli pour limiter la friction
 
----
+## 🔐 Sécurité côté front
+- Aucune clé sensible en dur : utiliser `.env.local`
+- Fallback robuste en cas d’échec réseau (affiche un message au lieu de planter)
+
 # ──────────────────────────────────
 # Hop-Syder Développeur
 # Full Stack & Data Scientist – Nexus Partners
