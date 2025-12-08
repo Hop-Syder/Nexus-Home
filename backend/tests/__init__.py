@@ -1,10 +1,4 @@
-pytest
-pytest-django
-pytest-cov
-requests
-psycopg2-binary
-Django
-djangorestframework
+"""Backend test package initialization for Nexus-Home Django/DRF checks."""
 
 # ──────────────────────────────
 # Hop-Syder Développeur

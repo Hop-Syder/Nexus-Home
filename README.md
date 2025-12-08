@@ -52,6 +52,7 @@ Nexus-Home/
 - La checklist formelle se trouve dans `docs/commission-verification.md` (rôles, critères user/admin, technique, UX).
 - Le suivi automatisé se fait via `node requirements-check.js` (statuts done/partial/todo à tenir à jour chaque sprint).
 - Le dossier `tests/` fournit des tests pytest prêts à exécuter pour contrôler API, rôles et schéma Supabase/PostgreSQL ; voir `son.md` pour la marche à suivre et les variables d'environnement.
+- Le guide `check-backend2.md` détaille le protocole pytest-django pour valider le backend Django/DRF (fixtures, routes, mapping des exigences, commandes).
 
 ## ✅ Tests à Effectuer
 - Frontend : lint (eslint), type-check (tsc), tests unitaires (vitest/jest), tests e2e (playwright) sur parcours recherche/WhatsApp CTA

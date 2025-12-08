@@ -8,6 +8,7 @@ Centraliser les points de contrôle qualité et la marche à suivre pour vérifi
 - `tests/test_requirements_api.py` : exigences fonctionnelles côté API publique (recherche, filtres, WhatsApp, absence de paiement).
 - `tests/test_requirements_admin.py` : exigences admin (auth, CRUD, publication, restrictions assistant).
 - `tests/test_requirements_db.py` : exigences base de données (hiérarchie localisation, FTS, colonnes FK).
+- `backend/tests/` : batterie complète pytest-django pour le backend Django/DRF (fixtures DRF, modèles, permissions, recherche) documentée dans `check-backend2.md`.
 
 ## 🛡️ Considérations de sécurité
 - Ne jamais commit les secrets : configure `API_BASE_URL`, `SUPABASE_DB_URL`, `SUPER_ADMIN_EMAIL`, `SUPER_ADMIN_PASSWORD`, `ASSISTANT_EMAIL`, `ASSISTANT_PASSWORD` dans l'environnement d'exécution uniquement.
@@ -17,8 +18,9 @@ Centraliser les points de contrôle qualité et la marche à suivre pour vérifi
 ## ✅ Tests à effectuer (pytest)
 1. `pip install -r requirements-dev.txt` (ou `pip install pytest requests psycopg2-binary`).
 2. Exporter les variables d'environnement listées plus haut.
-3. Lancer `pytest -v` à la racine du dépôt.
-4. Vérifier les tests `skip` : ils indiquent des variables manquantes ou absence de données seed (annonce publiée).
+3. Lancer `pytest -v` à la racine du dépôt pour les checks HTTP/DB distants.
+4. Lancer `pytest -v backend/tests --maxfail=1 --disable-warnings` pour les checks Django/DRF locaux décrits dans `check-backend2.md`.
+5. Vérifier les tests `skip` : ils indiquent des variables manquantes ou absence de données seed (annonce publiée).
 
 ## 🚀 Instructions d'exécution rapides
 ```bash

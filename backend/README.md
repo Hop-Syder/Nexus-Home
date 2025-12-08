@@ -28,6 +28,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 - Unitaires sur serializers, permissions, services (upload, recherche)
 - Intégration API : auth, CRUD annonces, filtres (prix, localisation, meublé), recherche full-text, rôles
 - Sécurité : throttling, CORS, accès admin, injection XSS/SQL bloquées
+- Suite backend complète : `pytest -v backend/tests --ds=<votre_module_settings>` (fixtures DRF + modèles décrits dans `check-backend2.md`).
 
 ## 🛠️ Démarrage (Docker)
 1. Créer `.env` depuis `.env.example` (DB, SECRET_KEY, JWT, S3).
