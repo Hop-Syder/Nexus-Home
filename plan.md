@@ -39,7 +39,7 @@ Planifier les étapes A→Z pour livrer une marketplace de location (user + admi
   - [x] Authentification et session sécurisée.
   - [x] Dashboard synthétique (statuts des annonces).
   - [x] Table des annonces avec création/édition et workflow de validation (boutons visibles selon rôle) ;
-  - [ ] Upload médias pour les annonces (reste à implémenter côté admin + API).
+  - [x] Upload médias pour les annonces (API sécurisée + upload assistant sous contrôle et suppression réservée au super admin).
 
 ### Phase 1.1 — Vérification de conformité MVP
 - [x] Préparer la **commission de vérification** (voir `docs/commission-verification.md`) et désigner les rôles.

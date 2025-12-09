@@ -35,6 +35,7 @@ export default function ListingDetailPage({ initialListing = null, initialError 
   if (error) return <p style={{ color: 'tomato' }}>{error}</p>;
   if (!listing) return <p>Aucune annonce trouvée.</p>;
 
+  const gallery = Array.isArray(listing.media) ? listing.media : [];
   return (
     <article className="card" style={{ display: 'grid', gap: '0.75rem' }}>
       <header>
@@ -49,6 +50,19 @@ export default function ListingDetailPage({ initialListing = null, initialError 
           </span>
         </div>
       </header>
+
+      {gallery.length ? (
+        <section aria-label="Galerie photos" className="listing-gallery">
+          <div className="gallery-grid">
+            {gallery.map((media) => (
+              <figure key={media.id} className="gallery-item">
+                <img src={media.url} alt={media.caption || listing.title} loading="lazy" />
+                {media.caption ? <figcaption>{media.caption}</figcaption> : null}
+              </figure>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section>
         <h3>À savoir</h3>

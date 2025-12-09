@@ -6,14 +6,16 @@ from django.db import models
 from django.db.models import Q
 from django.db import connection
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import FormParser, MultiPartParser
 
-from .models import Arrondissement, Commune, Country, Department, Listing, Zone
+from .models import Arrondissement, Commune, Country, Department, Listing, ListingMedia, Zone
 from .permissions import AssistantReadCreateOnly, IsAdminOrAssistant, IsSuperAdmin
 from .serializers import (
     ArrondissementSerializer,
@@ -21,6 +23,7 @@ from .serializers import (
     CountrySerializer,
     DepartmentSerializer,
     ListingAdminSerializer,
+    ListingMediaSerializer,
     ListingSerializer,
     LoginSerializer,
     ZoneSerializer,
@@ -49,7 +52,9 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
     """Public read-only access to published listings with lightweight filters."""
 
     serializer_class = ListingSerializer
-    queryset = Listing.objects.filter(status=Listing.STATUS_PUBLISHED)
+    queryset = Listing.objects.filter(status=Listing.STATUS_PUBLISHED).prefetch_related(
+        "media", "zone", "commune"
+    )
     lookup_field = "slug"
 
     def get_queryset(self):
@@ -142,6 +147,48 @@ class AdminListingViewSet(viewsets.ModelViewSet):
         listing.save(update_fields=["status", "validated_by"])
         serializer = self.get_serializer(listing)
         return Response(serializer.data)
+
+
+class ListingMediaUploadView(generics.GenericAPIView):
+    """Handle secure uploads of listing media for admins and assistants."""
+
+    permission_classes = [IsAdminOrAssistant]
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = ListingMediaSerializer
+
+    def post(self, request, listing_id: int, *args, **kwargs):
+        listing = get_object_or_404(Listing, pk=listing_id)
+        if request.user.role == "ADMIN_ASSISTANT" and listing.status == Listing.STATUS_PUBLISHED:
+            raise PermissionDenied("Assistants cannot modifier les médias d'une annonce publiée.")
+
+        upload = request.FILES.get("file")
+        if upload is None:
+            return Response({"detail": "Aucun fichier fourni."}, status=status.HTTP_400_BAD_REQUEST)
+
+        caption = request.data.get("caption", "")
+        position_raw = request.data.get("position", "0")
+        try:
+            position = max(0, int(position_raw))
+        except (TypeError, ValueError):
+            position = 0
+
+        media = ListingMedia.objects.create(
+            listing=listing,
+            file=upload,
+            caption=caption,
+            position=position,
+        )
+        serializer = ListingMediaSerializer(media, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, listing_id: int, media_id: int, *args, **kwargs):
+        listing = get_object_or_404(Listing, pk=listing_id)
+        media = get_object_or_404(ListingMedia, pk=media_id, listing=listing)
+        if request.user.role == "ADMIN_ASSISTANT":
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        media.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CountryListView(generics.ListAPIView):

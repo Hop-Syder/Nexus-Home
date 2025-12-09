@@ -8,6 +8,7 @@ export default function ListingCard({ listing }) {
     return null;
   }
 
+  const primaryMedia = Array.isArray(listing.media) && listing.media.length ? listing.media[0] : null;
   const whatsappLink = listing.whatsapp_phone
     ? `https://wa.me/${listing.whatsapp_phone.replace(/\D/g, '')}?text=${encodeURIComponent(
         `Bonjour, je suis intéressé par l'annonce ${listing.title || listing.id}.`
@@ -16,6 +17,16 @@ export default function ListingCard({ listing }) {
 
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      {primaryMedia ? (
+        <div className="listing-card__media" aria-label="Photo principale de l'annonce">
+          <img
+            src={primaryMedia.url}
+            alt={primaryMedia.caption || listing.title}
+            loading="lazy"
+            style={{ width: '100%', borderRadius: '0.6rem', objectFit: 'cover' }}
+          />
+        </div>
+      ) : null}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
         <span className="badge">{listing.type_logement || 'Logement'}</span>
         <span className="badge">{listing.is_meuble ? 'Meublé' : 'Non meublé'}</span>

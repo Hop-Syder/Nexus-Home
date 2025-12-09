@@ -57,6 +57,7 @@ Nexus-Home/
   - `POST /auth/login`
   - `GET/POST/PUT/DELETE /admin/listings` + actions `POST /admin/listings/{id}/validate|reject`
   - Règles : assistants ne publient ni ne suppriment ; seul le super admin valide/rejette.
+  - Médias : `POST /admin/listings/{id}/media` (upload image sous contrôle de rôle) et `DELETE /admin/listings/{id}/media/{media_id}` (suppression super admin)
 
 ## 🗺️ Plan d'exécution
 - Les tâches détaillées par phase (préparation, MVP, recherche avancée, scalabilité) et le design system confort 18–90 ans sont dans `plan.md` pour pilotage backlog et cohérence UX.
@@ -81,7 +82,7 @@ Nexus-Home/
 - Les environnements distants doivent fournir `DATABASE_URL` pour activer Postgres/GIN ; GitHub Actions utilisera la configuration SQLite embarquée pour garder les tests rapides.
 
 ## 🚀 Instructions d'Exécution (Docker Compose)
-1. Copier `.env.example` en `.env` et renseigner secrets (DB, JWT, stockage S3 si besoin).
+1. Copier `.env.example` en `.env` et renseigner secrets (DB, JWT, stockage S3 si besoin, `DJANGO_MEDIA_ROOT` inscriptible pour les uploads).
 2. Installer Docker & Docker Compose.
 3. Lancer la stack :
 

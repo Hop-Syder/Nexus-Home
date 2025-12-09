@@ -218,6 +218,27 @@ class Listing(models.Model):
         return candidate
 
 
+class ListingMedia(models.Model):
+    """Media assets attached to listings, enabling galleries and thumbnails."""
+
+    listing = models.ForeignKey(
+        Listing,
+        on_delete=models.CASCADE,
+        related_name="media",
+    )
+    file = models.ImageField(upload_to="listing_media/")
+    caption = models.CharField(max_length=255, blank=True)
+    position = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["position", "id"]
+        indexes = [models.Index(fields=["listing", "position"])]
+
+    def __str__(self) -> str:
+        return f"Media for {self.listing.title}"
+
+
 # ──────────────────────────────────
 # Hop-Syder Développeur
 # Full Stack & Data Scientist – Nexus Partners

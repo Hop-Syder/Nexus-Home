@@ -10,6 +10,7 @@ from .models import (
     Country,
     Department,
     Listing,
+    ListingMedia,
     User,
     Zone,
 )
@@ -69,6 +70,24 @@ class ListingSerializer(serializers.ModelSerializer):
     """Serializer for public listing consumption with embedded zone details."""
 
     zone = ZoneSerializer(read_only=True)
+    media = serializers.SerializerMethodField()
+
+
+class ListingMediaSerializer(serializers.ModelSerializer):
+    """Expose media metadata with absolute URLs for gallery rendering."""
+
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ListingMedia
+        fields = ["id", "url", "caption", "position", "created_at"]
+
+    def get_url(self, obj: ListingMedia) -> str:
+        request = self.context.get("request")
+        file_url = obj.file.url
+        if request is not None:
+            return request.build_absolute_uri(file_url)
+        return file_url
 
     class Meta:
         model = Listing
@@ -86,12 +105,21 @@ class ListingSerializer(serializers.ModelSerializer):
             "zone",
             "whatsapp_phone",
             "status",
+            "media",
         ]
         read_only_fields = ["status"]
+
+    def get_media(self, obj: Listing) -> list[dict]:
+        """Expose media items with absolute URLs to support gallery rendering."""
+
+        serializer = ListingMediaSerializer(obj.media.all(), many=True, context=self.context)
+        return serializer.data
 
 
 class ListingAdminSerializer(serializers.ModelSerializer):
     """Admin serializer enabling CRUD while protecting system-managed fields."""
+
+    media = serializers.SerializerMethodField(read_only=True)
 
     country_id = serializers.PrimaryKeyRelatedField(
         queryset=Country.objects.all(), source="country", write_only=True, required=False
@@ -136,6 +164,7 @@ class ListingAdminSerializer(serializers.ModelSerializer):
             "commune_id",
             "arrondissement_id",
             "zone_id",
+            "media",
         ]
         read_only_fields = [
             "id",
@@ -144,6 +173,7 @@ class ListingAdminSerializer(serializers.ModelSerializer):
             "commune",
             "arrondissement",
             "zone",
+            "media",
         ]
 
     def validate_price(self, value: int) -> int:
@@ -202,6 +232,12 @@ class ListingAdminSerializer(serializers.ModelSerializer):
 
         hydrated = self._hydrate_locations(validated_data)
         return super().update(instance, hydrated)
+
+    def get_media(self, obj: Listing) -> list[dict]:
+        """Expose media to admins to inform gallery coverage without extra calls."""
+
+        serializer = ListingMediaSerializer(obj.media.all(), many=True, context=self.context)
+        return serializer.data
 
 
 class LocationSerializer(serializers.ModelSerializer):

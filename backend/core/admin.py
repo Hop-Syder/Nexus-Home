@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Arrondissement, Commune, Country, Department, Listing, User, Zone
+from .models import Arrondissement, Commune, Country, Department, Listing, ListingMedia, User, Zone
 
 
 @admin.register(User)
@@ -61,6 +61,13 @@ class ListingAdmin(admin.ModelAdmin):
     list_display = ("title", "price", "type_logement", "status", "commune", "zone")
     list_filter = ("status", "type_logement", "commune", "zone")
     search_fields = ("title", "description")
+
+
+@admin.register(ListingMedia)
+class ListingMediaAdmin(admin.ModelAdmin):
+    list_display = ("listing", "caption", "position", "created_at")
+    list_filter = ("listing",)
+    ordering = ("listing", "position")
 
 
 # ──────────────────────────────────

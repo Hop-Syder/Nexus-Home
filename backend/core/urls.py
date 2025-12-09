@@ -8,6 +8,7 @@ from .views import (
     CommuneListView,
     CountryListView,
     DepartmentListView,
+    ListingMediaUploadView,
     ListingViewSet,
     LoginView,
     ZoneListView,
@@ -21,6 +22,16 @@ router.register("admin/listings", AdminListingViewSet, basename="admin-listings"
 urlpatterns = [
     path("auth/login", LoginView.as_view(), name="auth-login"),
     path("", include(router.urls)),
+    path(
+        "admin/listings/<int:listing_id>/media",
+        ListingMediaUploadView.as_view(),
+        name="admin-listing-media",
+    ),
+    path(
+        "admin/listings/<int:listing_id>/media/<int:media_id>",
+        ListingMediaUploadView.as_view(),
+        name="admin-listing-media-detail",
+    ),
     path("locations/countries", CountryListView.as_view(), name="locations-countries"),
     path("locations/departments", DepartmentListView.as_view(), name="locations-departments"),
     path("locations/communes", CommuneListView.as_view(), name="locations-communes"),

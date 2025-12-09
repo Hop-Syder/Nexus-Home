@@ -15,6 +15,7 @@ import {
   loginAdmin,
   publishListing,
   rejectListing,
+  uploadListingMedia,
 } from '../../lib/api';
 
 const EMPTY_FORM = {
@@ -187,7 +188,7 @@ function ListingForm({ onSubmit, communes, zones, disabled }) {
   );
 }
 
-function ListingsTable({ listings, onPublish, onReject, onDelete, loading }) {
+function ListingsTable({ listings, onPublish, onReject, onDelete, onUpload, loading }) {
   if (loading) return <p>Chargement des annonces…</p>;
   if (!listings.length) return <p>Aucune annonce pour le moment.</p>;
 
@@ -202,6 +203,7 @@ function ListingsTable({ listings, onPublish, onReject, onDelete, loading }) {
             <th>Prix</th>
             <th>Commune</th>
             <th>Zone</th>
+            <th>Médias</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -213,6 +215,24 @@ function ListingsTable({ listings, onPublish, onReject, onDelete, loading }) {
               <td style={{ textAlign: 'center' }}>{listing.price}</td>
               <td style={{ textAlign: 'center' }}>{listing.commune?.name || '—'}</td>
               <td style={{ textAlign: 'center' }}>{listing.zone?.name || '—'}</td>
+              <td style={{ textAlign: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                  <span className="badge">{listing.media?.length || 0}</span>
+                  <label className="button-secondary" style={{ cursor: 'pointer' }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(event) => {
+                        const [file] = event.target.files || [];
+                        if (file) onUpload(listing.id, file);
+                        event.target.value = '';
+                      }}
+                    />
+                    Ajouter une photo
+                  </label>
+                </div>
+              </td>
               <td style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
                 {listing.status !== 'PUBLISHED' ? (
                   <button type="button" className="button-primary" onClick={() => onPublish(listing.id)}>
@@ -325,6 +345,23 @@ export default function AdminWorkspace() {
     setLoading(false);
   };
 
+  const handleUpload = async (listingId, file) => {
+    setLoading(true);
+    const { media, error } = await uploadListingMedia(token, listingId, file);
+    if (error) {
+      setActionMessage(error);
+      setLoading(false);
+      return;
+    }
+    setListings((current) =>
+      current.map((item) =>
+        item.id === listingId ? { ...item, media: [...(item.media || []), media] } : item
+      )
+    );
+    setActionMessage('Média ajouté.');
+    setLoading(false);
+  };
+
   const handleLogout = () => {
     clearAdminToken();
     setToken(null);
@@ -372,11 +409,12 @@ export default function AdminWorkspace() {
           onPublish={handlePublish}
           onReject={handleReject}
           onDelete={handleDelete}
+          onUpload={handleUpload}
           loading={loading}
         />
       </div>
     );
-  }, [token, loginError, communes, zones, listings, loading, statusFilter]);
+  }, [token, loginError, communes, zones, listings, loading, statusFilter, handleUpload]);
 
   return (
     <div style={{ display: 'grid', gap: '1rem' }}>

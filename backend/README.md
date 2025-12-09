@@ -7,7 +7,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 - `apps/locations` : tables pays/départements/communes/arrondissements/zones + synchro de synonymes pour la recherche
 - `apps/listings` : annonces, types de logement, équipements, disponibilité, tarification, soft delete
 - `apps/users` : utilisateurs internes + rôles/permissions, audit log
-- `apps/media` : gestion des fichiers (S3 compatible), génération de vignettes
+- `apps/media` : gestion des fichiers (S3 compatible), génération de vignettes (MVP: stockage local sécurisé)
 - `apps/search` : configuration tsvector, index GIN, éventuellement passerelle Meilisearch
 - `config/` : settings Django (sécurité, CORS, DRF, logging), urls, wsgi/asgi
 
@@ -21,7 +21,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 ## 🗄️ Modèle de données (aperçu)
 - `Country`, `Department`, `Commune`, `District` (arrondissement), `Zone` (quartier/repère, avec synonymes)
 - `Listing` : titre, description, type, prix, durée, meublé, disponibilité, localisation FK, lat/long, statut (draft/published/archived)
-- `MediaAsset` : fichier, type, ordre, taille, dimensions ; stockage S3 avec URLs signées pour l’admin
+- `MediaAsset` : fichier, légende, ordre, horodatage ; stockage local configurable via `DJANGO_MEDIA_ROOT`/`DJANGO_MEDIA_URL`
 - `User` : profil interne, rôle, journal d’actions
 
 ## 🌐 Endpoints clés (v1)
@@ -33,6 +33,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
   - `POST /api/v1/auth/login` (token)
   - `GET/POST/PUT/DELETE /api/v1/admin/listings`
 - Actions : `POST /api/v1/admin/listings/{id}/validate` et `/reject` (réservé super admin)
+  - Médias : `POST /api/v1/admin/listings/{id}/media` (upload image) et `DELETE /api/v1/admin/listings/{id}/media/{media_id}` (suppression super admin)
 
 ## 🧪 Tests recommandés
 - Unitaires sur serializers, permissions, services (upload, recherche)
@@ -47,6 +48,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 4. `docker compose exec api python manage.py migrate` puis `createsuperuser`.
 5. Importer les données de localisation de base (script management command à prévoir).
 6. Vérifier l’API publique : `http://localhost:8000/api/v1/listings/`.
+7. Vérifier le stockage média local : `DJANGO_MEDIA_ROOT` doit être inscriptible (volume Docker recommandé).
 
 ---
 # ──────────────────────────────────

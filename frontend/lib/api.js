@@ -176,6 +176,33 @@ export async function deleteListing(token, listingId) {
   }
 }
 
+export async function uploadListingMedia(token, listingId, file, caption = '', position = 0) {
+  if (!file) {
+    return { media: null, error: 'Aucun fichier sélectionné.' };
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  if (caption) formData.append('caption', caption);
+  formData.append('position', Number.isFinite(position) ? position : 0);
+
+  try {
+    const response = await fetch(buildUrl(`/admin/listings/${listingId}/media`), {
+      method: 'POST',
+      headers: { ...adminHeaders(token) },
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`Upload refusé (${response.status})`);
+    }
+    const payload = await response.json();
+    return { media: payload, error: null };
+  } catch (error) {
+    console.error('Upload média échoué:', error);
+    return { media: null, error: 'Impossible de téléverser le média.' };
+  }
+}
+
 export async function fetchCommunes() {
   const url = buildUrl('/locations/communes');
   const data = await fetchJson(url);

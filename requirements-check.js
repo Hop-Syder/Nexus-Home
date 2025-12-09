@@ -16,6 +16,7 @@ const requirements = [
   { id: "DB_LOCATION_HIERARCHY", label: "Modèle de données localisation (pays, dep, commune, arr, zone)", category: "Backend / DB" },
   { id: "LOCATION_SEARCH", label: "Recherche auto-complétion des zones/quartiers", category: "Backend / Search" },
   { id: "SEARCH_FULLTEXT", label: "Recherche full-text sur annonces", category: "Backend / Search" },
+  { id: "ADMIN_MEDIA_UPLOAD", label: "Upload de médias côté admin avec contrôle des rôles", category: "Media" },
 ];
 
 // Mettre à jour ces statuts à chaque sprint : "done", "partial" ou "todo".
@@ -31,6 +32,7 @@ const implementationStatus = {
   DB_LOCATION_HIERARCHY: "done",
   LOCATION_SEARCH: "done",
   SEARCH_FULLTEXT: "done",
+  ADMIN_MEDIA_UPLOAD: "done",
 };
 
 function summarize(statuses) {

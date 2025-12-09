@@ -155,6 +155,47 @@ textarea:focus {
   font-size: 0.85rem;
 }
 
+.listing-card__media {
+  width: 100%;
+  max-height: 220px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.listing-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.listing-gallery .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.listing-gallery .gallery-item {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.listing-gallery img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.listing-gallery figcaption {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
 footer {
   margin: 2rem 0;
   color: var(--text-muted);
