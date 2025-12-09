@@ -26,29 +26,30 @@ Planifier les étapes A→Z pour livrer une marketplace de location (user + admi
 - [x] Mettre en place la CI lint + tests (GitHub Actions) et Docker Compose de base (frontend, backend, postgres/Supabase proxy).
 
 ### Phase 1 — MVP fonctionnel
-- [ ] Backend :
-  - [ ] Initialiser Django/DRF, créer modèles Users (roles), Listings, Locations, Media selon le modèle validé.
-  - [ ] Exposer API auth (login/logout/me) et CRUD annonces avec statuts (`DRAFT`, `PENDING`, `PUBLISHED`, `REJECTED`).
-  - [ ] Endpoints localisation (countries, departments, communes, arrondissements, zones) + recherche libre `q` (full-text + filtres).
-  - [ ] Validation des entrées via serializers, permissions rôle (Super Admin / Admin Assistant), logging d’audit minimal.
-- [ ] Frontend User :
-  - [ ] Pages Home, Listings (liste + filtres), Listing detail avec CTA WhatsApp prérempli et message contextualisé.
-  - [ ] Recherche texte + filtres basiques (ville, zone, type, prix, meublé, durée) + auto-complétion simple.
-  - [ ] Accessibilité (ARIA, labels, contrastes) et performance (SSR/SSG) ; pas de paiement en ligne.
-- [ ] Frontend Admin :
-  - [ ] Authentification et session sécurisée.
-  - [ ] Dashboard synthétique (statuts des annonces).
-  - [ ] Table des annonces avec création/édition, upload médias, workflow de validation (boutons visibles selon rôle) et respect des limites assistants.
+- [x] Backend :
+  - [x] Initialiser Django/DRF, créer modèles Users (roles), Listings, Locations, Media selon le modèle validé.
+  - [x] Exposer API auth (login/logout/me) et CRUD annonces avec statuts (`DRAFT`, `PENDING`, `PUBLISHED`, `REJECTED`).
+  - [x] Endpoints localisation (countries, departments, communes, arrondissements, zones) + recherche libre `q` (full-text + filtres).
+  - [x] Validation des entrées via serializers, permissions rôle (Super Admin / Admin Assistant), logging d’audit minimal.
+- [x] Frontend User :
+  - [x] Pages Home, Listings (liste + filtres), Listing detail avec CTA WhatsApp prérempli et message contextualisé.
+  - [x] Recherche texte + filtres basiques (ville, zone, type, prix, meublé, durée) + auto-complétion simple.
+  - [x] Accessibilité (ARIA, labels, contrastes) et performance (SSR/SSG) ; pas de paiement en ligne.
+- [x] Frontend Admin :
+  - [x] Authentification et session sécurisée.
+  - [x] Dashboard synthétique (statuts des annonces).
+  - [x] Table des annonces avec création/édition et workflow de validation (boutons visibles selon rôle) ;
+  - [ ] Upload médias pour les annonces (reste à implémenter côté admin + API).
 
 ### Phase 1.1 — Vérification de conformité MVP
-- [ ] Préparer la **commission de vérification** (voir `docs/commission-verification.md`) et désigner les rôles.
-- [ ] Exécuter `node requirements-check.js` à chaque fin de sprint et mettre à jour les statuts.
-- [ ] Lancer `pytest -v` (tests requirement) avec les variables d'env configurées ; corriger tout échec avant livraison.
+- [x] Préparer la **commission de vérification** (voir `docs/commission-verification.md`) et désigner les rôles.
+- [x] Exécuter `node requirements-check.js` à chaque fin de sprint et mettre à jour les statuts.
+- [ ] Lancer `pytest -v` (tests requirement) avec les variables d'env configurées ; corriger tout échec avant livraison (bloqué sur ce dépôt par l'accès PyPI en CI locale).
 - [ ] Documenter les écarts et actions correctives dans le backlog.
 
 ### Phase 2 — Expérience & recherche avancées
-- [ ] Auto-complétion et suggestions sur la barre de recherche (zones, types, prix).
-- [ ] Synonymes/fautes courantes sur zones (Fidjrossè/Fidjrosse) et types de logement.
+- [x] Auto-complétion et suggestions sur la barre de recherche (zones, types, prix).
+- [x] Synonymes/fautes courantes sur zones (Fidjrossè/Fidjrosse) et types de logement.
 - [ ] Filtres enrichis : standing, distance/plage (si coordonnées dispo), disponibilité.
 - [ ] Statistiques admin : vues par annonce, top zones, conversion WhatsApp (clics).
 - [ ] Gestion des rôles affinée (permissions par action) et journalisation détaillée.
