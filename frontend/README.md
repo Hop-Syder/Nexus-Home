@@ -18,6 +18,12 @@ frontend/
 └── next.config.js
 ```
 
+## 🗺️ Routes principales côté User
+- `/onboarding/theme` : choix du thème clair/sombre avant la première visite
+- `/` : accueil avec recherche rapide et annonces récentes
+- `/listings` : résultats avec filtres synchronisés à l’URL (commune, zone, type, prix, meublé, durée)
+- `/listings/[id]` : détail d’annonce avec bouton WhatsApp
+
 ## 🚀 Démarrage
 1. `cd frontend`
 2. `npm install`
