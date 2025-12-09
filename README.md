@@ -63,13 +63,23 @@ Nexus-Home/
 - Sécurité : vérification CORS, rate limiting, accès admin protégé, couverture des rôles
 - Qualité backend/DB : `pytest -v` avec `API_BASE_URL`, `SUPABASE_DB_URL`, `SUPER_ADMIN_EMAIL`, `SUPER_ADMIN_PASSWORD`, `ASSISTANT_EMAIL`, `ASSISTANT_PASSWORD` configurés (tests non destructifs hors créations/suppressions temporaires)
 
-## 🚀 Instructions d'Exécution (proposition Docker)
-1. Copier `.env.example` en `.env` et renseigner secrets (DB, JWT, stockage S3). 
+## 🚀 Instructions d'Exécution (Docker Compose)
+1. Copier `.env.example` en `.env` et renseigner secrets (DB, JWT, stockage S3 si besoin).
 2. Installer Docker & Docker Compose.
-3. Lancer les services : `docker compose up --build` (backend, frontend, postgres, optional meilisearch).
-4. Appliquer les migrations Django : `docker compose exec api python manage.py migrate`.
-5. Créer un superuser : `docker compose exec api python manage.py createsuperuser`.
-6. Accéder : `http://localhost:3000` (user) et `http://localhost:3000/admin` ou sous-domaine dédié pour le dashboard.
+3. Lancer la stack :
+
+```bash
+docker-compose up --build
+```
+
+4. Appliquer les migrations Django : `docker-compose exec backend python manage.py migrate`.
+5. Créer un superuser : `docker-compose exec backend python manage.py createsuperuser`.
+6. Accéder :
+   - Frontend utilisateur/admin : `http://localhost:3000`
+   - API publique : `http://localhost:8000/api/v1`
+   - Postgres : `localhost:5432` (pour outils SQL locaux)
+
+7. Arrêter la stack : `docker-compose down` (ajouter `-v` pour réinitialiser les données locales Postgres).
 
 ## 📄 Contribuer
 - Nommage explicite, fonctions courtes, pas de duplication (DRY)
