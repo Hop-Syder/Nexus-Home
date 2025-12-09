@@ -40,7 +40,7 @@ export default function ListingDetailPage({ initialListing = null, initialError 
     <article className="card" style={{ display: 'grid', gap: '0.75rem' }}>
       <header>
         <p className="badge" style={{ margin: 0 }}>
-          {listing.type_logement || 'Logement'} · {listing.is_meuble ? 'Meublé' : 'Non meublé'} · {listing.duree || 'Durée non précise'}
+          {listing.type_logement || 'Logement'} · {listing.standing || 'Standing'} · {listing.is_meuble ? 'Meublé' : 'Non meublé'} · {listing.duree || 'Durée non précise'}
         </p>
         <h2 style={{ marginBottom: '0.25rem' }}>{listing.title}</h2>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>

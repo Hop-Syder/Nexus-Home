@@ -10,6 +10,7 @@ const DEFAULT_FILTERS = {
   zone_id: '',
   zone_query: '',
   type_logement: '',
+  standing: '',
   price_min: '',
   price_max: '',
   is_meuble: '',
@@ -124,7 +125,7 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      <div className="grid grid-2">
+      <div className="grid grid-3">
         <div>
           <label htmlFor="type_logement">Type de logement</label>
           <select id="type_logement" name="type_logement" value={filters.type_logement} onChange={handleChange}>
@@ -133,6 +134,15 @@ export default function FiltersPanel({
             <option value="STUDIO">Studio</option>
             <option value="APPARTEMENT">Appartement</option>
             <option value="VILLA">Villa</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="standing">Standing</label>
+          <select id="standing" name="standing" value={filters.standing} onChange={handleChange}>
+            <option value="">Tous</option>
+            <option value="BASIQUE">Basique</option>
+            <option value="MOYEN">Moyen</option>
+            <option value="HAUT">Haut</option>
           </select>
         </div>
         <div>

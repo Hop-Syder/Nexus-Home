@@ -45,6 +45,14 @@ function sanitizeNumber(value) {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
+function sanitizeStanding(value) {
+  const allowed = new Set(['BASIQUE', 'MOYEN', 'HAUT']);
+  if (typeof value === 'string' && allowed.has(value)) {
+    return value;
+  }
+  return undefined;
+}
+
 function adminHeaders(token) {
   if (!token) return {};
   return { Authorization: `Token ${token}` };
@@ -72,6 +80,7 @@ export async function fetchListings(params = {}) {
     page_size: sanitizeNumber(params.page_size),
     price_min: sanitizeNumber(params.price_min),
     price_max: sanitizeNumber(params.price_max),
+    standing: sanitizeStanding(params.standing),
   });
   const data = await fetchJson(url);
   if (!data) {

@@ -42,7 +42,7 @@ Nexus-Home/
 - Stockage des médias avec liens signés pour l’admin si modification/suppression
 
 ## 📌 Fonctionnalités prioritaires
-- Recherche rapide : mots-clés + filtres (ville/commune, arrondissement, quartier/zone, prix, type, meublé, durée)
+- Recherche rapide : mots-clés + filtres (ville/commune, arrondissement, quartier/zone, prix, type, standing, meublé, durée)
 - Fiches annonces : photos optimisées, localisation hiérarchique, bouton WhatsApp pré-rempli
 - Admin : workflow de validation/rejet, édition versionnée, suppression sécurisée (soft delete), journalisation et filtres par statut
 - Gestion des assistants : droits restreints (pas de suppression définitive, validation réservée au super admin)

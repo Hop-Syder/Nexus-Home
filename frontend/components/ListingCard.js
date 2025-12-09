@@ -30,6 +30,7 @@ export default function ListingCard({ listing }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
         <span className="badge">{listing.type_logement || 'Logement'}</span>
         <span className="badge">{listing.is_meuble ? 'Meublé' : 'Non meublé'}</span>
+        {listing.standing ? <span className="badge">{listing.standing}</span> : null}
         {listing.duree ? <span className="badge">{listing.duree}</span> : null}
       </div>
       <h3 style={{ margin: 0 }}>{listing.title}</h3>

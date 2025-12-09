@@ -96,6 +96,8 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.filter(zone_id=params.get("zone_id"))
         if params.get("type_logement"):
             qs = qs.filter(type_logement=params.get("type_logement"))
+        if params.get("standing"):
+            qs = qs.filter(standing=params.get("standing"))
         if params.get("is_meuble"):
             qs = qs.filter(is_meuble=params.get("is_meuble") in {"true", "1", "True"})
         if params.get("duree"):
