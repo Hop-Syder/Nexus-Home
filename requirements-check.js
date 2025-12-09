@@ -19,16 +19,16 @@ const requirements = [
 
 // Mettre à jour ces statuts à chaque sprint : "done", "partial" ou "todo".
 const implementationStatus = {
-  USER_SEARCH_TEXT: "todo",
-  USER_FILTERS_BASIC: "todo",
-  USER_WHATSAPP_BUTTON: "todo",
+  USER_SEARCH_TEXT: "partial",
+  USER_FILTERS_BASIC: "partial",
+  USER_WHATSAPP_BUTTON: "done",
   NO_ONLINE_PAYMENT: "done",
-  ADMIN_LOGIN: "todo",
-  ADMIN_CRUD_LISTINGS: "todo",
-  ADMIN_VALIDATE_LISTINGS: "todo",
-  ADMIN_ASSISTANT_LIMITED: "todo",
-  DB_LOCATION_HIERARCHY: "todo",
-  SEARCH_FULLTEXT: "todo",
+  ADMIN_LOGIN: "done",
+  ADMIN_CRUD_LISTINGS: "partial",
+  ADMIN_VALIDATE_LISTINGS: "done",
+  ADMIN_ASSISTANT_LIMITED: "done",
+  DB_LOCATION_HIERARCHY: "done",
+  SEARCH_FULLTEXT: "done",
 };
 
 function summarize(statuses) {

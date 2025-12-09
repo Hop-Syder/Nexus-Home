@@ -12,7 +12,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 - `config/` : settings Django (sécurité, CORS, DRF, logging), urls, wsgi/asgi
 
 ## 🔐 Sécurité & conformité
-- Auth : Django auth + JWT (djoser/dj-rest-auth) avec cookies httpOnly ; option 2FA pour l’admin
+- Auth : Django auth + tokens DRF (MVP) ou JWT (djoser/dj-rest-auth) avec cookies httpOnly ; option 2FA pour l’admin
 - Permissions : Groupes `SUPER_ADMIN` (plein droit) et `ADMIN_ASSISTANT` (pouvoir limité). Guards par vue + filtres par objet si besoin
 - Validation : Serializers DRF + validators personnalisés ; sanitation des champs texte
 - Protection : rate limiting (throttling DRF), CORS restrictif, sécurité headers (CSP, HSTS), rotation des secrets via env
@@ -36,7 +36,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 3. `docker compose up --build api` pour lancer l’API et Postgres.
 4. `docker compose exec api python manage.py migrate` puis `createsuperuser`.
 5. Importer les données de localisation de base (script management command à prévoir).
-6. Vérifier l’API : `http://localhost:8000/api/health/`.
+6. Vérifier l’API publique : `http://localhost:8000/api/v1/listings/`.
 
 ---
 # ──────────────────────────────────

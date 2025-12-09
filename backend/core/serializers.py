@@ -65,6 +65,22 @@ class ListingSerializer(serializers.ModelSerializer):
 class ListingAdminSerializer(serializers.ModelSerializer):
     """Admin serializer enabling CRUD while protecting system-managed fields."""
 
+    country_id = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(), source="country", write_only=True, required=False
+    )
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(), source="department", write_only=True, required=False
+    )
+    commune_id = serializers.PrimaryKeyRelatedField(
+        queryset=Commune.objects.all(), source="commune", write_only=True, required=False
+    )
+    arrondissement_id = serializers.PrimaryKeyRelatedField(
+        queryset=Arrondissement.objects.all(), source="arrondissement", write_only=True, required=False
+    )
+    zone_id = serializers.PrimaryKeyRelatedField(
+        queryset=Zone.objects.all(), source="zone", write_only=True, required=False
+    )
+
     class Meta:
         model = Listing
         fields = [
@@ -87,13 +103,77 @@ class ListingAdminSerializer(serializers.ModelSerializer):
             "longitude",
             "whatsapp_phone",
             "status",
+            "country_id",
+            "department_id",
+            "commune_id",
+            "arrondissement_id",
+            "zone_id",
         ]
-        read_only_fields = ["id"]
+        read_only_fields = [
+            "id",
+            "country",
+            "department",
+            "commune",
+            "arrondissement",
+            "zone",
+        ]
 
     def validate_price(self, value: int) -> int:
+        """Prevent negative values so pricing logic remains coherent."""
+
         if value < 0:
             raise serializers.ValidationError("Price cannot be negative.")
         return value
+
+    def _hydrate_locations(self, attrs: dict) -> dict:
+        """Fill missing hierarchical location fields based on the provided zone/arrondissement."""
+
+        instance = getattr(self, "instance", None)
+
+        # Preserve existing instance values when an update only touches a subset of fields.
+        if instance:
+            for field in ["zone", "arrondissement", "commune", "department", "country"]:
+                attrs.setdefault(field, getattr(instance, field))
+
+        zone = attrs.get("zone")
+        if zone and not attrs.get("arrondissement"):
+            attrs["arrondissement"] = zone.arrondissement
+
+        arrondissement = attrs.get("arrondissement")
+        if arrondissement and not attrs.get("commune"):
+            attrs["commune"] = arrondissement.commune
+
+        commune = attrs.get("commune")
+        if commune and not attrs.get("department"):
+            attrs["department"] = commune.department
+
+        department = attrs.get("department")
+        if department and not attrs.get("country"):
+            attrs["country"] = department.country
+
+        missing = [
+            field_name
+            for field_name in ["country", "department", "commune", "arrondissement", "zone"]
+            if attrs.get(field_name) is None
+        ]
+        if missing:
+            raise serializers.ValidationError(
+                {"location": f"Champs localisation manquants: {', '.join(missing)}"}
+            )
+
+        return attrs
+
+    def create(self, validated_data: dict) -> Listing:
+        """Create listings while auto-populating the location chain from provided IDs."""
+
+        hydrated = self._hydrate_locations(validated_data)
+        return super().create(hydrated)
+
+    def update(self, instance: Listing, validated_data: dict) -> Listing:
+        """Update listings safely while retaining location consistency."""
+
+        hydrated = self._hydrate_locations(validated_data)
+        return super().update(instance, hydrated)
 
 
 class LocationSerializer(serializers.ModelSerializer):

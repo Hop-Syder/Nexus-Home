@@ -11,6 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 
 from .models import Arrondissement, Commune, Country, Department, Listing, Zone
 from .permissions import AssistantReadCreateOnly, IsAdminOrAssistant, IsSuperAdmin
@@ -27,7 +28,7 @@ from .serializers import (
 
 
 class LoginView(generics.GenericAPIView):
-    """Authenticate admin users and return a short-lived token placeholder."""
+    """Authenticate admin users and return a persistent token for API access."""
 
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
@@ -37,8 +38,10 @@ class LoginView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         login(request, user)
-        fake_token = f"session-{user.id}-token"
-        return Response({"access_token": fake_token, "token_type": "bearer"})
+
+        # Use DRF's Token model to issue an API-friendly credential without leaking session details.
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"access_token": token.key, "token_type": "bearer"})
 
 
 class ListingViewSet(viewsets.ReadOnlyModelViewSet):

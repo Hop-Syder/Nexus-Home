@@ -22,8 +22,8 @@ Planifier les étapes A→Z pour livrer une marketplace de location (user + admi
 ## 🧭 Roadmap détaillée
 ### Phase 0 — Préparation
 - [ ] Valider le domaine et les sous-domaines (`app`, `admin`).
-- [ ] Créer les dépôts/monorepo et configurer les environnements (.env exemples sécurisés).
-- [ ] Mettre en place la CI lint + tests (GitHub Actions) et Docker Compose de base (frontend, backend, postgres/Supabase proxy).
+- [x] Créer les dépôts/monorepo et configurer les environnements (.env exemples sécurisés).
+- [x] Mettre en place la CI lint + tests (GitHub Actions) et Docker Compose de base (frontend, backend, postgres/Supabase proxy).
 
 ### Phase 1 — MVP fonctionnel
 - [ ] Backend :

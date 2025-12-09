@@ -1,4 +1,6 @@
 """Custom DRF permissions enforcing Nexus-Home admin role boundaries."""
+"""Permission classes to enforce admin and assistant boundaries."""
+
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
