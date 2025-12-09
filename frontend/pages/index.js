@@ -1,6 +1,7 @@
 /**
  * Public landing and search page: highlights the key promise and displays listings with filters.
  */
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
@@ -12,6 +13,7 @@ const EMPTY_STATE = {
 };
 
 export default function HomePage() {
+  const router = useRouter();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,6 +36,22 @@ export default function HomePage() {
     fetchCommunes().then(({ results }) => setCommuneOptions(results || []));
   }, []);
 
+  const buildQueryFromFilters = (filters = {}) => {
+    const params = {};
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      params[key] = value;
+    });
+    return params;
+  };
+
+  const handleSearchRedirect = (nextFilters) => {
+    const safeFilters = nextFilters || {};
+    const query = buildQueryFromFilters(safeFilters);
+    // Redirect to the listings page so filters remain shareable and consistent with pagination.
+    router.push({ pathname: '/listings', query });
+  };
+
   const handleZoneSearch = async (query) => {
     if (!query || query.length < 2) {
       setZoneSuggestions([]);
@@ -51,7 +69,7 @@ export default function HomePage() {
           Recherche tolérante, filtres rapides, bouton WhatsApp direct. Pensé pour tous, de 18 à 90 ans.
         </p>
         <SearchBar
-          onSearch={loadListings}
+          onSearch={handleSearchRedirect}
           communeOptions={communeOptions}
           zoneOptions={zoneSuggestions}
           onZoneSearch={handleZoneSearch}
