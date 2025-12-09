@@ -45,7 +45,7 @@ def test_user_can_filter_by_location_and_price(api_client, published_listing):
 @pytest.mark.django_db
 def test_listing_detail_exposes_whatsapp_contact(api_client, published_listing):
     """Every listing detail should surface a WhatsApp contact method."""
-    detail_url = reverse("listings-detail", args=[published_listing.id])
+    detail_url = reverse("listings-detail", args=[published_listing.slug])
     response = api_client.get(detail_url)
     assert response.status_code == 200
     payload = response.json()

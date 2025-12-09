@@ -7,16 +7,16 @@ import { fetchListingDetail } from '../../lib/api';
 
 export default function ListingDetailPage() {
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
   const [listing, setListing] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
+    if (!slug) return;
     const load = async () => {
       setLoading(true);
-      const { listing: detail, error: fetchError } = await fetchListingDetail(id);
+      const { listing: detail, error: fetchError } = await fetchListingDetail(slug);
       if (fetchError) {
         setError(fetchError);
       }
@@ -24,11 +24,11 @@ export default function ListingDetailPage() {
       setLoading(false);
     };
     load();
-  }, [id]);
+  }, [slug]);
 
   const whatsappLink = listing?.whatsapp_phone
     ? `https://wa.me/${listing.whatsapp_phone.replace(/\D/g, '')}?text=${encodeURIComponent(
-        `Bonjour, je suis intéressé par l'annonce ${listing.title || id}.`
+        `Bonjour, je suis intéressé par l'annonce ${listing.title || slug}.`
       )}`
     : null;
 

@@ -41,6 +41,57 @@ def test_listing_str_uses_title(published_listing):
     assert str(published_listing) == "Chambre meublée à Fidjrossè"
 
 
+@pytest.mark.requirement("LISTING_MODEL_SLUG")
+@pytest.mark.django_db
+def test_slug_is_generated_and_unique(base_location, super_admin):
+    """Slug values should auto-populate and avoid collisions for duplicate titles."""
+    from core.models import Listing
+
+    location = base_location
+
+    first = Listing.objects.create(
+        title="Chambre test",  # identical titles must not collide
+        description="desc",
+        price=1000,
+        currency="XOF",
+        type_logement="CHAMBRE",
+        standing="BASIQUE",
+        is_meuble=False,
+        duree="MOIS",
+        country=location["country"],
+        department=location["department"],
+        commune=location["commune"],
+        arrondissement=location["arrondissement"],
+        zone=location["zone"],
+        whatsapp_phone="+22900000000",
+        status="PUBLISHED",
+        created_by=super_admin,
+    )
+
+    second = Listing.objects.create(
+        title="Chambre test",  # intentionally same to verify suffix
+        description="desc",
+        price=2000,
+        currency="XOF",
+        type_logement="CHAMBRE",
+        standing="BASIQUE",
+        is_meuble=False,
+        duree="MOIS",
+        country=location["country"],
+        department=location["department"],
+        commune=location["commune"],
+        arrondissement=location["arrondissement"],
+        zone=location["zone"],
+        whatsapp_phone="+22900000001",
+        status="PUBLISHED",
+        created_by=super_admin,
+    )
+
+    assert first.slug
+    assert second.slug
+    assert first.slug != second.slug
+
+
 # ──────────────────────────────
 # Hop-Syder Développeur
 # Full Stack & Data Scientist – Nexus Partners

@@ -20,12 +20,13 @@ def _get(http_client, path: str, **params):
     return http_client.get(_build_url(http_client, path), params=params, timeout=DEFAULT_TIMEOUT_SECONDS)
 
 
-def _extract_first_listing_id(payload: Dict) -> Optional[int]:
-    """Return the first listing identifier from a paginated response if present."""
+def _extract_first_listing_slug(payload: Dict) -> Optional[str]:
+    """Return the first listing slug (or id as fallback) from a paginated response."""
+
     results = payload.get("results")
     if isinstance(results, list) and results:
         first_item = results[0]
-        return first_item.get("id")
+        return first_item.get("slug") or str(first_item.get("id"))
     return None
 
 
@@ -62,11 +63,11 @@ def test_listing_detail_contains_whatsapp_contact(http_client):
     """Each listing detail must expose a WhatsApp contact link or phone."""
     initial = _get(http_client, "/listings", status="PUBLISHED", page_size=1)
     assert initial.status_code == 200
-    first_listing_id = _extract_first_listing_id(initial.json())
-    if first_listing_id is None:
+    first_listing_slug = _extract_first_listing_slug(initial.json())
+    if first_listing_slug is None:
         pytest.skip("Aucune annonce publiée disponible pour vérifier le contact WhatsApp")
 
-    detail_response = _get(http_client, f"/listings/{first_listing_id}")
+    detail_response = _get(http_client, f"/listings/{first_listing_slug}")
     assert detail_response.status_code == 200
     listing = detail_response.json()
     whatsapp_value = listing.get("whatsapp_link") or listing.get("whatsapp_phone")

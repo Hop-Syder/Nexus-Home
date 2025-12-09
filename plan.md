@@ -15,7 +15,7 @@ Planifier les étapes A→Z pour livrer une marketplace de location (user + admi
   - Côté user : home + listings avec recherche `q`, filtres (commune/ville, zone/quartier, type logement, prix min/max, meublé, durée), fiche détail avec localisation hiérarchique, galerie, CTA WhatsApp pré-rempli, aucun paiement en ligne.
   - Côté admin : login, rôles `SUPER_ADMIN` et `ADMIN_ASSISTANT`, CRUD annonces, statuts `DRAFT|PENDING|PUBLISHED|REJECTED`, assistants limités (pas de publish/suppression/gestion admins), création assistants par super admin.
 - **Données** : tables pays/département/commune/arrondissement/zone (avec synonyms JSON et type), listings avec localisation complète, coordonnées optionnelles, whatsapp_phone, views_count, created_by/validated_by.
-- **API REST `/api/v1`** : endpoints publics `GET /listings`, `GET /listings/{id}` ; admin auth/login ; admin listings CRUD + validate/reject ; localisation endpoints complets + search ; pas d’endpoint paiement.
+- **API REST `/api/v1`** : endpoints publics `GET /listings`, `GET /listings/{slug}` ; admin auth/login ; admin listings CRUD + validate/reject ; localisation endpoints complets + search ; pas d’endpoint paiement.
 - **Recherche** : full-text PostgreSQL (title, description, localisation) avec index GIN ; requêtes tolérantes pour 3–4 mots clés (ex: "chambre meublée fidjrossè").
 - **Tests** : pytest/pytest-django avec marqueurs requirement ; objectif = tous les tests requirement verts (models, API user/admin, rôles, search, localisation, FTS).
 

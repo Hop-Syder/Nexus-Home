@@ -9,6 +9,7 @@ from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class UserManager(BaseUserManager):
@@ -141,7 +142,7 @@ class Listing(models.Model):
     STANDING_CHOICES = [("BASIQUE", "Basique"), ("MOYEN", "Moyen"), ("HAUT", "Haut")]
 
     title = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True, max_length=255)
+    slug = models.SlugField(blank=True, max_length=255, unique=True)
     description = models.TextField()
     price = models.PositiveIntegerField()
     currency = models.CharField(max_length=10, default="XOF")
@@ -189,8 +190,32 @@ class Listing(models.Model):
         if self.price < 0:
             raise ValidationError("Price cannot be negative.")
 
+        # Ensure a non-empty, unique slug is always present even when admin inputs are sparse.
+        if not self.slug:
+            self.slug = self._generate_unique_slug()
+        elif Listing.objects.exclude(pk=self.pk).filter(slug=self.slug).exists():
+            self.slug = self._generate_unique_slug()
+
     def __str__(self) -> str:
         return self.title
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.slug or Listing.objects.exclude(pk=self.pk).filter(slug=self.slug).exists():
+            self.slug = self._generate_unique_slug()
+        super().save(*args, **kwargs)
+
+    def _generate_unique_slug(self) -> str:
+        """Create a stable slug from the title and ensure uniqueness without leaking DB errors."""
+
+        base_slug = slugify(self.title or "listing")[:240]
+        candidate = base_slug or "listing"
+        suffix = 1
+
+        while Listing.objects.exclude(pk=self.pk).filter(slug=candidate).exists():
+            suffix += 1
+            candidate = f"{base_slug}-{suffix}" if base_slug else f"listing-{suffix}"
+
+        return candidate
 
 
 # ──────────────────────────────────

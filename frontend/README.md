@@ -22,7 +22,7 @@ frontend/
 - `/onboarding/theme` : choix du thème clair/sombre avant la première visite
 - `/` : accueil avec recherche rapide et annonces récentes
 - `/listings` : résultats avec filtres synchronisés à l’URL (commune, zone, type, prix, meublé, durée) et pagination
-- `/listings/[id]` : détail d’annonce avec bouton WhatsApp
+- `/listings/[slug]` : détail d’annonce avec bouton WhatsApp et URL partageable
 - `/help` : rappel des étapes (recherche, filtres, contact WhatsApp, confort visuel)
 
 ## 🚀 Démarrage

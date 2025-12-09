@@ -88,7 +88,7 @@ export default function HomePage() {
 
       <div className="grid grid-3">
         {listings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
+          <ListingCard key={listing.slug || listing.id} listing={listing} />
         ))}
       </div>
     </div>

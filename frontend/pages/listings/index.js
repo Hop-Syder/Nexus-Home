@@ -191,7 +191,7 @@ export default function ListingsPage() {
           </div>
           <div className="grid grid-2">
             {listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <ListingCard key={listing.slug || listing.id} listing={listing} />
             ))}
           </div>
         </div>

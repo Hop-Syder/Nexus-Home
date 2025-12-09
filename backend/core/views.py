@@ -50,6 +50,7 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = ListingSerializer
     queryset = Listing.objects.filter(status=Listing.STATUS_PUBLISHED)
+    lookup_field = "slug"
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -97,9 +98,10 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
         return qs
 
     def retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
-        Listing.objects.filter(pk=kwargs.get("pk")).update(views_count=models.F("views_count") + 1)
-        return response
+        listing = self.get_object()
+        Listing.objects.filter(pk=listing.pk).update(views_count=models.F("views_count") + 1)
+        serializer = self.get_serializer(listing)
+        return Response(serializer.data)
 
 
 class AdminListingViewSet(viewsets.ModelViewSet):

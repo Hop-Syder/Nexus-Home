@@ -30,7 +30,11 @@ export default function ListingCard({ listing }) {
         </span>
       </div>
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        <Link className="button-secondary" href={`/listings/${listing.id}`} aria-label={`Voir les détails de ${listing.title}`}>
+        <Link
+          className="button-secondary"
+          href={`/listings/${listing.slug || listing.id}`}
+          aria-label={`Voir les détails de ${listing.title}`}
+        >
           Voir plus
         </Link>
         {whatsappLink ? (

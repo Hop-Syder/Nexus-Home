@@ -50,7 +50,7 @@ Nexus-Home/
 
 ## 🌐 API REST (v1)
 - Public :
-  - `GET /listings` (texte + filtres) ; `GET /listings/{id}`
+- `GET /listings` (texte + filtres) ; `GET /listings/{slug}` (slug unique)
   - Localisation hiérarchique : `GET /locations/countries`, `/departments`, `/communes`, `/arrondissements`, `/zones`
   - Auto-complétion : `GET /locations/search?q=` (zones/quartiers avec contexte commune/arrondissement)
 - Admin :

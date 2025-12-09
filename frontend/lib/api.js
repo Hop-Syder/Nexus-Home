@@ -96,9 +96,9 @@ export async function fetchListings(params = {}) {
   };
 }
 
-export async function fetchListingDetail(id) {
-  if (!id) return { listing: null, error: 'Identifiant manquant.' };
-  const url = buildUrl(`/listings/${id}`);
+export async function fetchListingDetail(slug) {
+  if (!slug) return { listing: null, error: 'Identifiant manquant.' };
+  const url = buildUrl(`/listings/${slug}`);
   const data = await fetchJson(url);
   if (!data) {
     return { listing: null, error: "Impossible de récupérer l'annonce." };
