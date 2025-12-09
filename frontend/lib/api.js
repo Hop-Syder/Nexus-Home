@@ -115,6 +115,16 @@ export async function fetchListingDetail(slug) {
   return { listing: data, error: null };
 }
 
+export async function trackWhatsappClick(slug) {
+  if (!slug) return { count: null, error: 'Identifiant manquant.' };
+  const url = buildUrl(`/listings/${slug}/whatsapp-click/`);
+  const data = await fetchJson(url, { method: 'POST' });
+  if (!data || typeof data.whatsapp_clicks !== 'number') {
+    return { count: null, error: 'Impossible de journaliser le clic WhatsApp.' };
+  }
+  return { count: data.whatsapp_clicks, error: null };
+}
+
 export async function loginAdmin(email, password) {
   const url = buildUrl('/auth/login');
   const body = JSON.stringify({ email, password });

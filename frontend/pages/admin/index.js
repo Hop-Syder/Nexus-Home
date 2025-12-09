@@ -279,7 +279,8 @@ function StatsOverview({ overview, loading, error }) {
     { label: 'En attente', value: overview.pending },
     { label: 'Brouillons', value: overview.draft },
     { label: 'Rejetées', value: overview.rejected },
-    { label: 'Vues totales', value: overview.views },
+    { label: 'Vues totales', value: overview.views ?? 0 },
+    { label: 'Clics WhatsApp', value: overview.whatsapp_clicks ?? 0 },
   ];
 
   return (

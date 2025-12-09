@@ -2,6 +2,7 @@
  * Listing card designed for quick scanning: clear price, location, and WhatsApp CTA for all audiences.
  */
 import Link from 'next/link';
+import { trackWhatsappClick } from '../lib/api';
 
 export default function ListingCard({ listing }) {
   if (!listing) {
@@ -14,6 +15,19 @@ export default function ListingCard({ listing }) {
         `Bonjour, je suis intéressé par l'annonce ${listing.title || listing.id}.`
       )}`
     : null;
+
+  const handleWhatsappClick = async (event) => {
+    if (event) event.preventDefault();
+    if (!whatsappLink) return;
+
+    // Log the click for conversion tracking without slowing down the user journey.
+    const slugOrId = listing.slug || listing.id;
+    if (slugOrId) {
+      await trackWhatsappClick(slugOrId);
+    }
+
+    window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -50,7 +64,13 @@ export default function ListingCard({ listing }) {
           Voir plus
         </Link>
         {whatsappLink ? (
-          <a className="button-primary" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+          <a
+            className="button-primary"
+            href={whatsappLink}
+            onClick={handleWhatsappClick}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             📱 Contacter sur WhatsApp
           </a>
         ) : null}

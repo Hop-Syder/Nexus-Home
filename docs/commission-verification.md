@@ -27,6 +27,7 @@
 - [ ] Dashboard avec totaux et statuts des annonces.
 - [ ] Actions Admin : créer, modifier, supprimer, publier une annonce ; créer un admin assistant.
 - [ ] Actions Admin Assistant : créer/éditer (DRAFT/PENDING) ; pas de publication, pas de suppression, pas de gestion des admins.
+- [ ] Statistiques admin : compteurs (total/published/pending/draft/rejected), vues cumulées et clics WhatsApp tracés.
 
 ### C. Modèle de données & localisation
 - [ ] Annonce liée à pays, département, commune/ville, arrondissement, zone/quartier.

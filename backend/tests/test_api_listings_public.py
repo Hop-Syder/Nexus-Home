@@ -92,6 +92,21 @@ def test_listing_detail_exposes_whatsapp_contact(api_client, published_listing):
         )
 
 
+@pytest.mark.requirement("WHATSAPP_CONVERSION")
+@pytest.mark.django_db
+def test_whatsapp_click_increments_counter(api_client, published_listing):
+    """Clicks on the WhatsApp CTA should update conversion counters without auth."""
+
+    click_url = reverse("listings-whatsapp-click", args=[published_listing.slug])
+    first_response = api_client.post(click_url)
+    assert first_response.status_code == 200
+    assert first_response.json()["whatsapp_clicks"] == 1
+
+    second_response = api_client.post(click_url)
+    assert second_response.status_code == 200
+    assert second_response.json()["whatsapp_clicks"] == 2
+
+
 # ──────────────────────────────
 # Hop-Syder Développeur
 # Full Stack & Data Scientist – Nexus Partners

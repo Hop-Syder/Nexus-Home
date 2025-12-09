@@ -112,6 +112,17 @@ class ListingViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(listing)
         return Response(serializer.data)
 
+    @action(detail=True, methods=["post"], permission_classes=[AllowAny], url_path="whatsapp-click")
+    def whatsapp_click(self, request, *args, **kwargs):
+        """Track WhatsApp CTA usage to inform conversion metrics without blocking the user."""
+
+        listing = self.get_object()
+        Listing.objects.filter(pk=listing.pk).update(
+            whatsapp_clicks=models.F("whatsapp_clicks") + 1
+        )
+        listing.refresh_from_db(fields=["whatsapp_clicks"])
+        return Response({"whatsapp_clicks": listing.whatsapp_clicks})
+
 
 class AdminListingViewSet(viewsets.ModelViewSet):
     """Admin CRUD endpoints with role-aware restrictions and validation actions."""
@@ -295,8 +306,10 @@ class AdminStatsOverviewView(generics.GenericAPIView):
             draft=Count("id", filter=Q(status=Listing.STATUS_DRAFT)),
             rejected=Count("id", filter=Q(status=Listing.STATUS_REJECTED)),
             views=Sum("views_count"),
+            whatsapp_clicks=Sum("whatsapp_clicks"),
         )
         aggregates["views"] = aggregates["views"] or 0
+        aggregates["whatsapp_clicks"] = aggregates["whatsapp_clicks"] or 0
         serializer = self.get_serializer(aggregates)
         return Response(serializer.data)
 

@@ -158,6 +158,7 @@ class Listing(models.Model):
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     whatsapp_phone = models.CharField(max_length=32)
+    whatsapp_clicks = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=STATUS_DRAFT)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="created_listings")
     validated_by = models.ForeignKey(

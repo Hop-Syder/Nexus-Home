@@ -29,12 +29,13 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 - `GET /api/v1/listings` + `/api/v1/listings/{slug}` (slug unique, auto-généré)
   - Localisations : `/api/v1/locations/countries|departments|communes|arrondissements|zones`
   - Auto-complétion : `/api/v1/locations/search?q=` pour proposer les zones/quartiers (synonymes inclus)
+  - Conversion : `POST /api/v1/listings/{slug}/whatsapp-click/` pour tracer les clics CTA (anonyme)
 - Admin :
   - `POST /api/v1/auth/login` (token)
   - `GET/POST/PUT/DELETE /api/v1/admin/listings`
 - Actions : `POST /api/v1/admin/listings/{id}/validate` et `/reject` (réservé super admin)
   - Médias : `POST /api/v1/admin/listings/{id}/media` (upload image) et `DELETE /api/v1/admin/listings/{id}/media/{media_id}` (suppression super admin)
-  - Statistiques : `GET /api/v1/admin/stats/overview` (compteurs, vues) et `GET /api/v1/admin/stats/top-zones?limit=5`
+  - Statistiques : `GET /api/v1/admin/stats/overview` (compteurs, vues, clics WhatsApp) et `GET /api/v1/admin/stats/top-zones?limit=5`
 
 ## 🧪 Tests recommandés
 - Unitaires sur serializers, permissions, services (upload, recherche)

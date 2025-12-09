@@ -38,6 +38,7 @@ def test_overview_counts_lifecycle(super_admin_client, base_location, super_admi
         whatsapp_phone="+22990000000",
         status=Listing.STATUS_PUBLISHED,
         views_count=7,
+        whatsapp_clicks=3,
         created_by=super_admin,
     )
     Listing.objects.create(
@@ -70,6 +71,7 @@ def test_overview_counts_lifecycle(super_admin_client, base_location, super_admi
     assert payload["draft"] == 0
     assert payload["rejected"] == 0
     assert payload["views"] == 7
+    assert payload["whatsapp_clicks"] == 3
 
 
 @pytest.mark.requirement("ADMIN_STATS_TOP_ZONES")

@@ -19,6 +19,7 @@ const requirements = [
   { id: "ADMIN_MEDIA_UPLOAD", label: "Upload de médias côté admin avec contrôle des rôles", category: "Media" },
   { id: "ADMIN_STATS_OVERVIEW", label: "Statistiques admin : compteurs et vues", category: "Admin QA" },
   { id: "ADMIN_STATS_TOP_ZONES", label: "Statistiques admin : zones les plus actives", category: "Admin QA" },
+  { id: "WHATSAPP_CONVERSION", label: "Suivi des clics WhatsApp pour la conversion", category: "Admin QA" },
 ];
 
 // Mettre à jour ces statuts à chaque sprint : "done", "partial" ou "todo".
@@ -37,6 +38,7 @@ const implementationStatus = {
   ADMIN_MEDIA_UPLOAD: "done",
   ADMIN_STATS_OVERVIEW: "done",
   ADMIN_STATS_TOP_ZONES: "done",
+  WHATSAPP_CONVERSION: "done",
 };
 
 function summarize(statuses) {

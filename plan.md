@@ -51,7 +51,8 @@ Planifier les étapes A→Z pour livrer une marketplace de location (user + admi
 - [x] Auto-complétion et suggestions sur la barre de recherche (zones, types, prix).
 - [x] Synonymes/fautes courantes sur zones (Fidjrossè/Fidjrosse) et types de logement.
 - [ ] Filtres enrichis : standing, distance/plage (si coordonnées dispo), disponibilité.
-- [ ] Statistiques admin : vues par annonce, top zones, conversion WhatsApp (clics).
+- [ ] Filtres enrichis : standing, distance/plage (si coordonnées dispo), disponibilité.
+- [x] Statistiques admin : vues par annonce, top zones, conversion WhatsApp (clics).
 - [ ] Gestion des rôles affinée (permissions par action) et journalisation détaillée.
 
 ### Phase 3 — Scalabilité & extension

@@ -66,13 +66,6 @@ class ZoneSearchSerializer(serializers.ModelSerializer):
         ]
 
 
-class ListingSerializer(serializers.ModelSerializer):
-    """Serializer for public listing consumption with embedded zone details."""
-
-    zone = ZoneSerializer(read_only=True)
-    media = serializers.SerializerMethodField()
-
-
 class ListingMediaSerializer(serializers.ModelSerializer):
     """Expose media metadata with absolute URLs for gallery rendering."""
 
@@ -89,6 +82,13 @@ class ListingMediaSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(file_url)
         return file_url
 
+
+class ListingSerializer(serializers.ModelSerializer):
+    """Serializer for public listing consumption with embedded zone details."""
+
+    zone = ZoneSerializer(read_only=True)
+    media = serializers.SerializerMethodField()
+
     class Meta:
         model = Listing
         fields = [
@@ -104,10 +104,11 @@ class ListingMediaSerializer(serializers.ModelSerializer):
             "commune",
             "zone",
             "whatsapp_phone",
+            "whatsapp_clicks",
             "status",
             "media",
         ]
-        read_only_fields = ["status"]
+        read_only_fields = ["status", "whatsapp_clicks"]
 
     def get_media(self, obj: Listing) -> list[dict]:
         """Expose media items with absolute URLs to support gallery rendering."""
@@ -125,6 +126,7 @@ class StatsOverviewSerializer(serializers.Serializer):
     draft = serializers.IntegerField()
     rejected = serializers.IntegerField()
     views = serializers.IntegerField()
+    whatsapp_clicks = serializers.IntegerField()
 
 
 class TopZoneSerializer(serializers.Serializer):
@@ -178,6 +180,7 @@ class ListingAdminSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude",
             "whatsapp_phone",
+            "whatsapp_clicks",
             "status",
             "country_id",
             "department_id",
@@ -194,6 +197,7 @@ class ListingAdminSerializer(serializers.ModelSerializer):
             "arrondissement",
             "zone",
             "media",
+            "whatsapp_clicks",
         ]
 
     def validate_price(self, value: int) -> int:

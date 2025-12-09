@@ -4,7 +4,7 @@
  */
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { fetchListingDetail } from '../../lib/api';
+import { fetchListingDetail, trackWhatsappClick } from '../../lib/api';
 
 export default function ListingDetailPage({ initialListing = null, initialError = null }) {
   const router = useRouter();
@@ -30,6 +30,17 @@ export default function ListingDetailPage({ initialListing = null, initialError 
         `Bonjour, je suis intéressé par l'annonce ${listing.title || slug}.`
       )}`
     : null;
+
+  const handleWhatsappClick = async (event) => {
+    if (event) event.preventDefault();
+    if (!whatsappLink || !slug) {
+      return;
+    }
+
+    // Record conversions before opening WhatsApp to align with admin stats expectations.
+    await trackWhatsappClick(slug);
+    window.open(whatsappLink, '_blank', 'noopener,noreferrer');
+  };
 
   if (loading) return <p>Chargement…</p>;
   if (error) return <p style={{ color: 'tomato' }}>{error}</p>;
@@ -70,7 +81,13 @@ export default function ListingDetailPage({ initialListing = null, initialError 
       </section>
 
       {whatsappLink ? (
-        <a className="button-primary" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+        <a
+          className="button-primary"
+          href={whatsappLink}
+          onClick={handleWhatsappClick}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           📱 Contacter sur WhatsApp
         </a>
       ) : (
