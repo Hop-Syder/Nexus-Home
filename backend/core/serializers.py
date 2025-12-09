@@ -37,6 +37,34 @@ class ZoneSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "type", "synonyms"]
 
 
+class ZoneSearchSerializer(serializers.ModelSerializer):
+    """Expose zone suggestions with human-readable breadcrumbs for auto-complete."""
+
+    arrondissement_name = serializers.CharField(source="arrondissement.name", read_only=True)
+    commune_name = serializers.CharField(
+        source="arrondissement.commune.name", read_only=True
+    )
+    department_name = serializers.CharField(
+        source="arrondissement.commune.department.name", read_only=True
+    )
+    country_name = serializers.CharField(
+        source="arrondissement.commune.department.country.name", read_only=True
+    )
+
+    class Meta:
+        model = Zone
+        fields = [
+            "id",
+            "name",
+            "type",
+            "synonyms",
+            "arrondissement_name",
+            "commune_name",
+            "department_name",
+            "country_name",
+        ]
+
+
 class ListingSerializer(serializers.ModelSerializer):
     """Serializer for public listing consumption with embedded zone details."""
 

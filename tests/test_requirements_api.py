@@ -85,6 +85,18 @@ def test_no_online_payment_endpoints(http_client):
         assert response.status_code in {404, 405}, f"Endpoint suspect trouvé : {path}"
 
 
+@pytest.mark.requirement("LOCATION_SEARCH")
+def test_location_search_endpoint_exposes_zone_suggestions(http_client):
+    """Verify the auto-complete endpoint returns structured zone suggestions."""
+    response = _get(http_client, "/locations/search", q="fidj")
+    assert response.status_code == 200
+    payload = response.json()
+    assert isinstance(payload, list)
+    if payload:
+        sample = payload[0]
+        assert "name" in sample and "commune_name" in sample
+
+
 # ──────────────────────────────────
 # Hop-Syder Développeur
 # Full Stack & Data Scientist – Nexus Partners

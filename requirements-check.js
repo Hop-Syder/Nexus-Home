@@ -14,6 +14,7 @@ const requirements = [
   { id: "ADMIN_VALIDATE_LISTINGS", label: "Admin peut valider une annonce (PUBLISHED)", category: "Rôles & Permissions" },
   { id: "ADMIN_ASSISTANT_LIMITED", label: "Admin assistant avec droits limités", category: "Rôles & Permissions" },
   { id: "DB_LOCATION_HIERARCHY", label: "Modèle de données localisation (pays, dep, commune, arr, zone)", category: "Backend / DB" },
+  { id: "LOCATION_SEARCH", label: "Recherche auto-complétion des zones/quartiers", category: "Backend / Search" },
   { id: "SEARCH_FULLTEXT", label: "Recherche full-text sur annonces", category: "Backend / Search" },
 ];
 
@@ -28,6 +29,7 @@ const implementationStatus = {
   ADMIN_VALIDATE_LISTINGS: "done",
   ADMIN_ASSISTANT_LIMITED: "done",
   DB_LOCATION_HIERARCHY: "done",
+  LOCATION_SEARCH: "done",
   SEARCH_FULLTEXT: "done",
 };
 

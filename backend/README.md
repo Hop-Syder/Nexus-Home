@@ -24,6 +24,16 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
 - `MediaAsset` : fichier, type, ordre, taille, dimensions ; stockage S3 avec URLs signées pour l’admin
 - `User` : profil interne, rôle, journal d’actions
 
+## 🌐 Endpoints clés (v1)
+- Public :
+  - `GET /api/v1/listings` + `/api/v1/listings/{id}`
+  - Localisations : `/api/v1/locations/countries|departments|communes|arrondissements|zones`
+  - Auto-complétion : `/api/v1/locations/search?q=` pour proposer les zones/quartiers (synonymes inclus)
+- Admin :
+  - `POST /api/v1/auth/login` (token)
+  - `GET/POST/PUT/DELETE /api/v1/admin/listings`
+  - Actions : `POST /api/v1/admin/listings/{id}/validate` et `/reject` (réservé super admin)
+
 ## 🧪 Tests recommandés
 - Unitaires sur serializers, permissions, services (upload, recherche)
 - Intégration API : auth, CRUD annonces, filtres (prix, localisation, meublé), recherche full-text, rôles

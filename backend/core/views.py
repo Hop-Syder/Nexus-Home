@@ -24,6 +24,7 @@ from .serializers import (
     ListingSerializer,
     LoginSerializer,
     ZoneSerializer,
+    ZoneSearchSerializer,
 )
 
 
@@ -198,6 +199,32 @@ class ZoneListView(generics.ListAPIView):
         if arrondissement_id:
             queryset = queryset.filter(arrondissement_id=arrondissement_id)
         return queryset
+
+
+class ZoneSearchView(generics.ListAPIView):
+    """Return zone suggestions with contextual breadcrumbs for auto-complete."""
+
+    serializer_class = ZoneSearchSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        raw_query = (self.request.query_params.get("q") or "").strip()
+        if len(raw_query) < 2:
+            # Avoid returning everything when the query is missing or too short.
+            return Zone.objects.none()
+
+        normalized = raw_query.lower()
+        base_queryset = Zone.objects.select_related(
+            "arrondissement__commune__department__country"
+        ).filter(Q(name__icontains=normalized) | Q(synonyms__icontains=normalized))
+
+        limit_param = self.request.query_params.get("limit", "20")
+        try:
+            limit = max(1, min(int(limit_param), 50))
+        except ValueError:
+            limit = 20
+
+        return base_queryset.order_by("name")[:limit]
 
 
 class ZoneSearchView(generics.ListAPIView):

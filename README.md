@@ -48,6 +48,16 @@ Nexus-Home/
 - Gestion des assistants : droits restreints (pas de suppression définitive, validation réservée au super admin)
 - Préparation cartographie : stockage latitude/longitude pour future vue carte et recherche par rayon
 
+## 🌐 API REST (v1)
+- Public :
+  - `GET /listings` (texte + filtres) ; `GET /listings/{id}`
+  - Localisation hiérarchique : `GET /locations/countries`, `/departments`, `/communes`, `/arrondissements`, `/zones`
+  - Auto-complétion : `GET /locations/search?q=` (zones/quartiers avec contexte commune/arrondissement)
+- Admin :
+  - `POST /auth/login`
+  - `GET/POST/PUT/DELETE /admin/listings` + actions `POST /admin/listings/{id}/validate|reject`
+  - Règles : assistants ne publient ni ne suppriment ; seul le super admin valide/rejette.
+
 ## 🗺️ Plan d'exécution
 - Les tâches détaillées par phase (préparation, MVP, recherche avancée, scalabilité) et le design system confort 18–90 ans sont dans `plan.md` pour pilotage backlog et cohérence UX.
 
