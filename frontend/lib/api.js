@@ -126,6 +126,25 @@ export async function loginAdmin(email, password) {
   return { token: data.access_token, error: null };
 }
 
+export async function fetchAdminStatsOverview(token) {
+  const url = buildUrl('/admin/stats/overview');
+  const data = await fetchJson(url, { headers: adminHeaders(token) });
+  if (!data) {
+    return { overview: null, error: 'Impossible de récupérer les statistiques.' };
+  }
+  return { overview: data, error: null };
+}
+
+export async function fetchAdminTopZones(token, limit = 5) {
+  const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(Number(limit), 1), 20) : 5;
+  const url = buildUrl('/admin/stats/top-zones', { limit: safeLimit });
+  const data = await fetchJson(url, { headers: adminHeaders(token) });
+  if (!data) {
+    return { zones: [], error: 'Impossible de récupérer les zones actives.' };
+  }
+  return { zones: data, error: null };
+}
+
 export async function fetchAdminListings(token, params = {}) {
   const url = buildUrl('/admin/listings', params);
   const data = await fetchJson(url, { headers: adminHeaders(token) });

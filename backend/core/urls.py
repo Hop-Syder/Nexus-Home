@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     AdminListingViewSet,
+    AdminStatsOverviewView,
+    AdminTopZonesView,
     ArrondissementListView,
     CommuneListView,
     CountryListView,
@@ -22,6 +24,8 @@ router.register("admin/listings", AdminListingViewSet, basename="admin-listings"
 urlpatterns = [
     path("auth/login", LoginView.as_view(), name="auth-login"),
     path("", include(router.urls)),
+    path("admin/stats/overview", AdminStatsOverviewView.as_view(), name="admin-stats-overview"),
+    path("admin/stats/top-zones", AdminTopZonesView.as_view(), name="admin-stats-top-zones"),
     path(
         "admin/listings/<int:listing_id>/media",
         ListingMediaUploadView.as_view(),

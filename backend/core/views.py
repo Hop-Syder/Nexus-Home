@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from django.contrib.auth import login
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count, Sum
 from django.db import connection
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.shortcuts import get_object_or_404
@@ -26,6 +26,8 @@ from .serializers import (
     ListingMediaSerializer,
     ListingSerializer,
     LoginSerializer,
+    StatsOverviewSerializer,
+    TopZoneSerializer,
     ZoneSerializer,
     ZoneSearchSerializer,
 )
@@ -277,6 +279,64 @@ class ZoneSearchView(generics.ListAPIView):
 
         # Enforce a bounded result set to prevent expensive queries while keeping suggestions quick for users.
         return base_queryset.order_by("name")[:limit]
+
+
+class AdminStatsOverviewView(generics.GenericAPIView):
+    """Return lifecycle and engagement stats for admins and assistants."""
+
+    permission_classes = [IsAdminOrAssistant]
+    serializer_class = StatsOverviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        aggregates = Listing.objects.aggregate(
+            total=Count("id"),
+            published=Count("id", filter=Q(status=Listing.STATUS_PUBLISHED)),
+            pending=Count("id", filter=Q(status=Listing.STATUS_PENDING)),
+            draft=Count("id", filter=Q(status=Listing.STATUS_DRAFT)),
+            rejected=Count("id", filter=Q(status=Listing.STATUS_REJECTED)),
+            views=Sum("views_count"),
+        )
+        aggregates["views"] = aggregates["views"] or 0
+        serializer = self.get_serializer(aggregates)
+        return Response(serializer.data)
+
+
+class AdminTopZonesView(generics.GenericAPIView):
+    """Return the most active zones to inform supply and moderation focus."""
+
+    permission_classes = [IsAdminOrAssistant]
+    serializer_class = TopZoneSerializer
+
+    def get(self, request, *args, **kwargs):
+        raw_limit = request.query_params.get("limit", "5")
+        try:
+            limit = max(1, min(int(raw_limit), 20))
+        except ValueError:
+            limit = 5
+
+        ranking = (
+            Listing.objects.filter(status=Listing.STATUS_PUBLISHED)
+            .values(
+                "zone_id",
+                "zone__name",
+                "zone__arrondissement__commune__name",
+            )
+            .annotate(listing_count=Count("id"))
+            .order_by("-listing_count", "zone__name")[:limit]
+        )
+
+        payload = [
+            {
+                "zone_id": row["zone_id"],
+                "zone_name": row["zone__name"],
+                "commune_name": row["zone__arrondissement__commune__name"],
+                "listing_count": row["listing_count"],
+            }
+            for row in ranking
+        ]
+
+        serializer = self.get_serializer(payload, many=True)
+        return Response(serializer.data)
 
 
 # ──────────────────────────────────

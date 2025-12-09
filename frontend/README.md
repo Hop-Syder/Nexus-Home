@@ -4,7 +4,7 @@
 Frontend Next.js unique (pages router) prêt pour les interfaces **User** et **Admin** :
 - recherche rapide avec filtres, fiche détail avec CTA WhatsApp
 - design system doux (thème clair/sombre) pour confort 18–90 ans
-- espace admin connecté : login par token, création de brouillons, publication/rejet/suppression selon rôle avec filtre par statut
+- espace admin connecté : login par token, création de brouillons, publication/rejet/suppression selon rôle avec filtre par statut, statistiques rapides (compteurs, vues, zones actives)
 
 ## 📁 Structure
 ```

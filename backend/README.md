@@ -34,6 +34,7 @@ Fournir une API sécurisée pour la marketplace Nexus-Home : gestion des annonce
   - `GET/POST/PUT/DELETE /api/v1/admin/listings`
 - Actions : `POST /api/v1/admin/listings/{id}/validate` et `/reject` (réservé super admin)
   - Médias : `POST /api/v1/admin/listings/{id}/media` (upload image) et `DELETE /api/v1/admin/listings/{id}/media/{media_id}` (suppression super admin)
+  - Statistiques : `GET /api/v1/admin/stats/overview` (compteurs, vues) et `GET /api/v1/admin/stats/top-zones?limit=5`
 
 ## 🧪 Tests recommandés
 - Unitaires sur serializers, permissions, services (upload, recherche)

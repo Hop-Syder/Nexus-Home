@@ -9,6 +9,8 @@ import {
   createAdminListing,
   deleteListing,
   fetchAdminListings,
+  fetchAdminStatsOverview,
+  fetchAdminTopZones,
   fetchCommunes,
   fetchZones,
   loadStoredAdminToken,
@@ -256,6 +258,80 @@ function ListingsTable({ listings, onPublish, onReject, onDelete, onUpload, load
   );
 }
 
+function StatsOverview({ overview, loading, error }) {
+  if (loading) {
+    return <div className="card">Chargement des statistiques…</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="card" style={{ color: 'tomato' }}>
+        {error}
+      </div>
+    );
+  }
+
+  if (!overview) return null;
+
+  const items = [
+    { label: 'Total', value: overview.total },
+    { label: 'Publiées', value: overview.published },
+    { label: 'En attente', value: overview.pending },
+    { label: 'Brouillons', value: overview.draft },
+    { label: 'Rejetées', value: overview.rejected },
+    { label: 'Vues totales', value: overview.views },
+  ];
+
+  return (
+    <div className="card">
+      <h3 style={{ marginTop: 0 }}>Statistiques rapides</h3>
+      <div className="grid grid-3">
+        {items.map((item) => (
+          <div key={item.label} style={{ padding: '0.5rem 0' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{item.label}</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{item.value}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TopZonesPanel({ zones, loading }) {
+  if (loading) {
+    return <div className="card">Chargement des zones actives…</div>;
+  }
+
+  if (!zones || zones.length === 0) {
+    return (
+      <div className="card">
+        <h3 style={{ marginTop: 0 }}>Zones actives</h3>
+        <p style={{ marginBottom: 0 }}>Pas encore de zone avec des annonces publiées.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="card">
+      <h3 style={{ marginTop: 0 }}>Zones actives</h3>
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '0.5rem' }}>
+        {zones.map((zone) => (
+          <li
+            key={zone.zone_id}
+            style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', alignItems: 'center' }}
+          >
+            <div>
+              <div style={{ fontWeight: 600 }}>{zone.zone_name}</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{zone.commune_name}</div>
+            </div>
+            <span className="badge">{zone.listing_count} publiées</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function AdminWorkspace() {
   const [token, setToken] = useState(null);
   const [loginError, setLoginError] = useState(null);
@@ -265,6 +341,10 @@ export default function AdminWorkspace() {
   const [zones, setZones] = useState([]);
   const [actionMessage, setActionMessage] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [statsOverview, setStatsOverview] = useState(null);
+  const [topZones, setTopZones] = useState([]);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState('');
 
   useEffect(() => {
     const stored = loadStoredAdminToken();
@@ -272,6 +352,18 @@ export default function AdminWorkspace() {
     fetchCommunes().then(({ results }) => setCommunes(results || []));
     fetchZones().then(({ results }) => setZones(results || []));
   }, []);
+
+  useEffect(() => {
+    if (!token) return;
+    setStatsLoading(true);
+    Promise.all([fetchAdminStatsOverview(token), fetchAdminTopZones(token, 5)])
+      .then(([overviewResult, topZonesResult]) => {
+        setStatsOverview(overviewResult.overview);
+        setTopZones(topZonesResult.zones || []);
+        setStatsError(overviewResult.error || topZonesResult.error || '');
+      })
+      .finally(() => setStatsLoading(false));
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
@@ -292,6 +384,17 @@ export default function AdminWorkspace() {
     setToken(newToken);
   };
 
+  const refreshStats = async () => {
+    if (!token) return;
+    const [overviewResult, topZonesResult] = await Promise.all([
+      fetchAdminStatsOverview(token),
+      fetchAdminTopZones(token, 5),
+    ]);
+    setStatsOverview(overviewResult.overview);
+    setTopZones(topZonesResult.zones || []);
+    setStatsError(overviewResult.error || topZonesResult.error || '');
+  };
+
   const handleCreateListing = async (form, resetForm) => {
     setLoading(true);
     const { listing, error } = await createAdminListing(token, form);
@@ -303,6 +406,7 @@ export default function AdminWorkspace() {
     resetForm();
     setListings((current) => [listing, ...current]);
     setActionMessage('Annonce créée en brouillon.');
+    await refreshStats();
     setLoading(false);
   };
 
@@ -316,6 +420,7 @@ export default function AdminWorkspace() {
     }
     setListings((current) => current.map((item) => (item.id === id ? listing : item)));
     setActionMessage('Annonce publiée.');
+    await refreshStats();
     setLoading(false);
   };
 
@@ -329,6 +434,7 @@ export default function AdminWorkspace() {
     }
     setListings((current) => current.map((item) => (item.id === id ? listing : item)));
     setActionMessage('Annonce rejetée.');
+    await refreshStats();
     setLoading(false);
   };
 
@@ -342,6 +448,7 @@ export default function AdminWorkspace() {
     }
     setListings((current) => current.filter((item) => item.id !== id));
     setActionMessage('Annonce supprimée.');
+    await refreshStats();
     setLoading(false);
   };
 
@@ -403,6 +510,8 @@ export default function AdminWorkspace() {
             </button>
           </div>
         </div>
+        <StatsOverview overview={statsOverview} loading={statsLoading} error={statsError} />
+        <TopZonesPanel zones={topZones} loading={statsLoading} />
         <ListingForm onSubmit={handleCreateListing} communes={communes} zones={zones} disabled={loading} />
         <ListingsTable
           listings={listings}
@@ -414,7 +523,20 @@ export default function AdminWorkspace() {
         />
       </div>
     );
-  }, [token, loginError, communes, zones, listings, loading, statusFilter, handleUpload]);
+  }, [
+    token,
+    loginError,
+    communes,
+    zones,
+    listings,
+    loading,
+    statusFilter,
+    statsOverview,
+    statsLoading,
+    statsError,
+    topZones,
+    handleUpload,
+  ]);
 
   return (
     <div style={{ display: 'grid', gap: '1rem' }}>

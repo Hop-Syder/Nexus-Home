@@ -116,6 +116,26 @@ class ListingMediaSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
+class StatsOverviewSerializer(serializers.Serializer):
+    """Summarize listing lifecycle counts for the admin dashboard."""
+
+    total = serializers.IntegerField()
+    published = serializers.IntegerField()
+    pending = serializers.IntegerField()
+    draft = serializers.IntegerField()
+    rejected = serializers.IntegerField()
+    views = serializers.IntegerField()
+
+
+class TopZoneSerializer(serializers.Serializer):
+    """Expose the most active zones with minimal breadcrumbing."""
+
+    zone_id = serializers.IntegerField()
+    zone_name = serializers.CharField()
+    commune_name = serializers.CharField()
+    listing_count = serializers.IntegerField()
+
+
 class ListingAdminSerializer(serializers.ModelSerializer):
     """Admin serializer enabling CRUD while protecting system-managed fields."""
 

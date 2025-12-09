@@ -17,6 +17,8 @@ const requirements = [
   { id: "LOCATION_SEARCH", label: "Recherche auto-complétion des zones/quartiers", category: "Backend / Search" },
   { id: "SEARCH_FULLTEXT", label: "Recherche full-text sur annonces", category: "Backend / Search" },
   { id: "ADMIN_MEDIA_UPLOAD", label: "Upload de médias côté admin avec contrôle des rôles", category: "Media" },
+  { id: "ADMIN_STATS_OVERVIEW", label: "Statistiques admin : compteurs et vues", category: "Admin QA" },
+  { id: "ADMIN_STATS_TOP_ZONES", label: "Statistiques admin : zones les plus actives", category: "Admin QA" },
 ];
 
 // Mettre à jour ces statuts à chaque sprint : "done", "partial" ou "todo".
@@ -33,6 +35,8 @@ const implementationStatus = {
   LOCATION_SEARCH: "done",
   SEARCH_FULLTEXT: "done",
   ADMIN_MEDIA_UPLOAD: "done",
+  ADMIN_STATS_OVERVIEW: "done",
+  ADMIN_STATS_TOP_ZONES: "done",
 };
 
 function summarize(statuses) {
