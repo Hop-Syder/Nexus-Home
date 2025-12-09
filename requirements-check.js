@@ -19,12 +19,12 @@ const requirements = [
 
 // Mettre à jour ces statuts à chaque sprint : "done", "partial" ou "todo".
 const implementationStatus = {
-  USER_SEARCH_TEXT: "partial",
-  USER_FILTERS_BASIC: "partial",
+  USER_SEARCH_TEXT: "done",
+  USER_FILTERS_BASIC: "done",
   USER_WHATSAPP_BUTTON: "done",
   NO_ONLINE_PAYMENT: "done",
   ADMIN_LOGIN: "done",
-  ADMIN_CRUD_LISTINGS: "partial",
+  ADMIN_CRUD_LISTINGS: "done",
   ADMIN_VALIDATE_LISTINGS: "done",
   ADMIN_ASSISTANT_LIMITED: "done",
   DB_LOCATION_HIERARCHY: "done",

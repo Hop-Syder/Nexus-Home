@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
-import { fetchListings } from '../lib/api';
+import { fetchListings, fetchCommunes, searchZones } from '../lib/api';
 
 const EMPTY_STATE = {
   heading: 'Aucune annonce trouvée',
@@ -15,6 +15,8 @@ export default function HomePage() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [communeOptions, setCommuneOptions] = useState([]);
+  const [zoneSuggestions, setZoneSuggestions] = useState([]);
 
   const loadListings = async (filters = {}) => {
     setLoading(true);
@@ -29,7 +31,17 @@ export default function HomePage() {
 
   useEffect(() => {
     loadListings();
+    fetchCommunes().then(({ results }) => setCommuneOptions(results || []));
   }, []);
+
+  const handleZoneSearch = async (query) => {
+    if (!query || query.length < 2) {
+      setZoneSuggestions([]);
+      return;
+    }
+    const { results } = await searchZones(query);
+    setZoneSuggestions(results || []);
+  };
 
   return (
     <div style={{ display: 'grid', gap: '1rem' }}>
@@ -38,7 +50,12 @@ export default function HomePage() {
         <p style={{ marginTop: 0, color: 'var(--text-muted)' }}>
           Recherche tolérante, filtres rapides, bouton WhatsApp direct. Pensé pour tous, de 18 à 90 ans.
         </p>
-        <SearchBar onSearch={loadListings} />
+        <SearchBar
+          onSearch={loadListings}
+          communeOptions={communeOptions}
+          zoneOptions={zoneSuggestions}
+          onZoneSearch={handleZoneSearch}
+        />
       </section>
 
       {loading ? <p>Chargement des annonces…</p> : null}

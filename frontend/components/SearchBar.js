@@ -1,5 +1,6 @@
 /**
  * Search bar with concise filters; prioritizes clarity for non-technical users and seniors.
+ * Accepts pre-fetched location options to avoid manual typing errors.
  */
 import { useState } from 'react';
 
@@ -14,12 +15,15 @@ const DEFAULT_FILTERS = {
   duree: '',
 };
 
-export default function SearchBar({ onSearch }) {
+export default function SearchBar({ onSearch, communeOptions = [], zoneOptions = [], onZoneSearch }) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFilters((current) => ({ ...current, [name]: value }));
+    if (name === 'zone_id' && onZoneSearch) {
+      onZoneSearch(value);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -48,17 +52,35 @@ export default function SearchBar({ onSearch }) {
       <div className="grid grid-3">
         <div>
           <label htmlFor="commune_id">Commune / Ville</label>
-          <input
-            id="commune_id"
-            name="commune_id"
-            placeholder="Cotonou"
-            value={filters.commune_id}
-            onChange={handleChange}
-          />
+          <select id="commune_id" name="commune_id" value={filters.commune_id} onChange={handleChange}>
+            <option value="">Toutes</option>
+            {communeOptions.map((commune) => (
+              <option key={commune.id} value={commune.id}>
+                {commune.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="zone_id">Zone / Quartier</label>
-          <input id="zone_id" name="zone_id" placeholder="Fidjrossè" value={filters.zone_id} onChange={handleChange} />
+          <input
+            id="zone_id"
+            name="zone_id"
+            placeholder="Fidjrossè"
+            list="zone-suggestions"
+            value={filters.zone_id}
+            onChange={handleChange}
+            aria-label="Zone ou quartier"
+          />
+          {zoneOptions.length > 0 ? (
+            <datalist id="zone-suggestions">
+              {zoneOptions.map((zone) => (
+                <option key={`${zone.id}-${zone.name}`} value={zone.id}>
+                  {zone.name}
+                </option>
+              ))}
+            </datalist>
+          ) : null}
         </div>
         <div>
           <label htmlFor="type_logement">Type de logement</label>

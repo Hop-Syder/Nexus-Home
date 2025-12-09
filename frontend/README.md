@@ -4,7 +4,7 @@
 Frontend Next.js unique (pages router) prêt pour les interfaces **User** et **Admin** :
 - recherche rapide avec filtres, fiche détail avec CTA WhatsApp
 - design system doux (thème clair/sombre) pour confort 18–90 ans
-- base admin prête à connecter au backend (auth JWT/Session côté Django)
+- espace admin connecté : login par token, création de brouillons, publication/suppression selon rôle
 
 ## 📁 Structure
 ```
@@ -12,7 +12,7 @@ frontend/
 ├── components/        # Layout, thème, cartes, barre de recherche
 ├── hooks/             # Hooks réutilisables (useTheme)
 ├── lib/               # Clients API
-├── pages/             # Pages Next (user + admin placeholders)
+├── pages/             # Pages Next (user + admin avec login et gestion basique)
 ├── styles/            # Design tokens et styles globaux
 ├── package.json       # Scripts/npm
 └── next.config.js
@@ -26,6 +26,9 @@ frontend/
 
 ## 🧪 Tests rapides
 - `npm run lint` (nécessite eslint installé)
+- `npm run dev` puis vérifier :
+  - la recherche avec filtres renvoie bien des annonces
+  - l'admin se connecte, crée un brouillon, publie et supprime
 
 ## 🧠 Notes UX
 - Thème clair/sombre doux, switch accessible dans le header
@@ -35,6 +38,7 @@ frontend/
 ## 🔐 Sécurité côté front
 - Aucune clé sensible en dur : utiliser `.env.local`
 - Fallback robuste en cas d’échec réseau (affiche un message au lieu de planter)
+- Token admin stocké en localStorage et effaçable via le bouton de déconnexion
 
 # ──────────────────────────────────
 # Hop-Syder Développeur
