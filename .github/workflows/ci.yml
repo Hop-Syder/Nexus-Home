@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - work
+
+jobs:
+  backend-tests:
+    name: Backend tests (Django + pytest)
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run backend test suite
+        run: |
+          pytest backend/tests tests
+
+  compliance-audit:
+    name: Compliance checklist audit (Node)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Execute requirements compliance script
+        run: |
+          node requirements-check.js
+
+# ──────────────────────────────────
+# Hop-Syder Développeur
+# Full Stack & Data Scientist – Nexus Partners
+# 📧 daoudaabassichristian@gmail.com
+# 🌐 ceo.nexuspartners.xyz
+# ──────────────────────────────────

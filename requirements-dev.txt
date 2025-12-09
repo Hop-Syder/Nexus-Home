@@ -1,0 +1,14 @@
+pytest
+pytest-django
+pytest-cov
+requests
+psycopg2-binary
+Django
+djangorestframework
+
+# ──────────────────────────────
+# Hop-Syder Développeur
+# Full Stack & Data Scientist – Nexus Partners
+# 📧 daoudaabassichristian@gmail.com
+# 🌐 ceo.nexuspartners.xyz
+# ──────────────────────────────

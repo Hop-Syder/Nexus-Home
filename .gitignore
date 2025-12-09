@@ -1,0 +1,27 @@
+# Ignorer les environnements virtuels Python pour éviter l'inclusion d'artefacts locaux
+.venv/
+
+# Cache et artefacts Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Cache pytest
+.pytest_cache/
+
+# Artefacts front-end Next.js/Node
+node_modules/
+.next/
+out/
+
+# Fichiers système
+.DS_Store
+
+# ──────────────────────────────────
+# Hop-Syder Développeur
+# Full Stack & Data Scientist – Nexus Partners
+# 📧 daoudaabassichristian@gmail.com
+# 🌐 ceo.nexuspartners.xyz
+# ──────────────────────────────────
