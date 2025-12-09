@@ -1,15 +1,16 @@
 /**
- * Listing detail page: shows key facts and preserves WhatsApp CTA for seamless conversion.
+ * Listing detail page with SSR for better SEO and instant load on shareable slug URLs.
+ * Uses a client refresh to keep view counts and live data accurate after navigation without reloads.
  */
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { fetchListingDetail } from '../../lib/api';
 
-export default function ListingDetailPage() {
+export default function ListingDetailPage({ initialListing = null, initialError = null }) {
   const router = useRouter();
   const { slug } = router.query;
-  const [listing, setListing] = useState(null);
-  const [error, setError] = useState(null);
+  const [listing, setListing] = useState(initialListing);
+  const [error, setError] = useState(initialError);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -17,10 +18,8 @@ export default function ListingDetailPage() {
     const load = async () => {
       setLoading(true);
       const { listing: detail, error: fetchError } = await fetchListingDetail(slug);
-      if (fetchError) {
-        setError(fetchError);
-      }
-      setListing(detail);
+      setError(fetchError || null);
+      setListing(detail || null);
       setLoading(false);
     };
     load();
@@ -40,7 +39,7 @@ export default function ListingDetailPage() {
     <article className="card" style={{ display: 'grid', gap: '0.75rem' }}>
       <header>
         <p className="badge" style={{ margin: 0 }}>
-          {listing.type_logement || 'Logement'} · {listing.is_meuble ? 'Meublé' : 'Non meublé'} · {listing.duree || 'Durée non précisée'}
+          {listing.type_logement || 'Logement'} · {listing.is_meuble ? 'Meublé' : 'Non meublé'} · {listing.duree || 'Durée non précise'}
         </p>
         <h2 style={{ marginBottom: '0.25rem' }}>{listing.title}</h2>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -65,6 +64,31 @@ export default function ListingDetailPage() {
       )}
     </article>
   );
+}
+
+export async function getServerSideProps({ params }) {
+  const slug = params?.slug;
+  if (!slug) {
+    return { notFound: true };
+  }
+
+  const { listing, error } = await fetchListingDetail(slug);
+
+  if (!listing) {
+    return {
+      props: {
+        initialListing: null,
+        initialError: error || "Cette annonce est introuvable ou n'est plus disponible.",
+      },
+    };
+  }
+
+  return {
+    props: {
+      initialListing: listing,
+      initialError: error || null,
+    },
+  };
 }
 // ──────────────────────────────────
 // Hop-Syder Développeur
