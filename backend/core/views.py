@@ -210,7 +210,7 @@ class ZoneSearchView(generics.ListAPIView):
     def get_queryset(self):
         raw_query = (self.request.query_params.get("q") or "").strip()
         if len(raw_query) < 2:
-            # Avoid returning everything when the query is missing or too short.
+            # Avoid returning everything when the query is missing or too short to keep the endpoint cheap and safe.
             return Zone.objects.none()
 
         normalized = raw_query.lower()
@@ -224,21 +224,8 @@ class ZoneSearchView(generics.ListAPIView):
         except ValueError:
             limit = 20
 
+        # Enforce a bounded result set to prevent expensive queries while keeping suggestions quick for users.
         return base_queryset.order_by("name")[:limit]
-
-
-class ZoneSearchView(generics.ListAPIView):
-    """Autocomplete-friendly search across zone names and synonyms."""
-
-    serializer_class = ZoneSerializer
-
-    def get_queryset(self):
-        queryset = Zone.objects.all()
-        query = self.request.query_params.get("q")
-        if query:
-            lowered = query.lower()
-            queryset = queryset.filter(Q(name__icontains=lowered) | Q(synonyms__icontains=lowered))
-        return queryset
 
 
 # ──────────────────────────────────
