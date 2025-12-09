@@ -63,6 +63,13 @@ Nexus-Home/
 - Sécurité : vérification CORS, rate limiting, accès admin protégé, couverture des rôles
 - Qualité backend/DB : `pytest -v` avec `API_BASE_URL`, `SUPABASE_DB_URL`, `SUPER_ADMIN_EMAIL`, `SUPER_ADMIN_PASSWORD`, `ASSISTANT_EMAIL`, `ASSISTANT_PASSWORD` configurés (tests non destructifs hors créations/suppressions temporaires)
 
+## 🧪 Intégration Continue
+- GitHub Actions (`.github/workflows/ci.yml`) exécute automatiquement :
+  - les tests backend Django (`pytest backend/tests tests`) en Python 3.11 avec la configuration SQLite par défaut (pas de secrets requis) ;
+  - l’audit des exigences métier via `node requirements-check.js` pour vérifier l’état des livrables.
+- Avant de pousser, lancer localement `pytest backend/tests tests` et `node requirements-check.js` pour aligner les résultats avec ceux du pipeline.
+- Les environnements distants doivent fournir `DATABASE_URL` pour activer Postgres/GIN ; GitHub Actions utilisera la configuration SQLite embarquée pour garder les tests rapides.
+
 ## 🚀 Instructions d'Exécution (Docker Compose)
 1. Copier `.env.example` en `.env` et renseigner secrets (DB, JWT, stockage S3 si besoin).
 2. Installer Docker & Docker Compose.
