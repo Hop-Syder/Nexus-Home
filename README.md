@@ -44,7 +44,7 @@ Nexus-Home/
 ## 📌 Fonctionnalités prioritaires
 - Recherche rapide : mots-clés + filtres (ville/commune, arrondissement, quartier/zone, prix, type, meublé, durée)
 - Fiches annonces : photos optimisées, localisation hiérarchique, bouton WhatsApp pré-rempli
-- Admin : workflow de validation, édition versionnée, suppression sécurisée (soft delete), journalisation
+- Admin : workflow de validation/rejet, édition versionnée, suppression sécurisée (soft delete), journalisation et filtres par statut
 - Gestion des assistants : droits restreints (pas de suppression définitive, validation réservée au super admin)
 - Préparation cartographie : stockage latitude/longitude pour future vue carte et recherche par rayon
 

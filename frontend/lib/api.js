@@ -135,6 +135,15 @@ export async function publishListing(token, listingId) {
   return { listing: data, error: null };
 }
 
+export async function rejectListing(token, listingId) {
+  const url = buildUrl(`/admin/listings/${listingId}/reject`);
+  const data = await fetchJson(url, { method: 'POST', headers: adminHeaders(token) });
+  if (!data) {
+    return { listing: null, error: "Rejet refusé par le serveur." };
+  }
+  return { listing: data, error: null };
+}
+
 export async function deleteListing(token, listingId) {
   const url = buildUrl(`/admin/listings/${listingId}`);
   try {

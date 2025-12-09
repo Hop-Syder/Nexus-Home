@@ -14,6 +14,7 @@ import {
   loadStoredAdminToken,
   loginAdmin,
   publishListing,
+  rejectListing,
 } from '../../lib/api';
 
 const EMPTY_FORM = {
@@ -25,6 +26,13 @@ const EMPTY_FORM = {
   zone: '',
   whatsapp_phone: '',
   status: 'DRAFT',
+};
+
+const STATUS_LABELS = {
+  DRAFT: 'Brouillon',
+  PENDING: 'En attente',
+  PUBLISHED: 'Publié',
+  REJECTED: 'Rejeté',
 };
 
 function LoginPanel({ onAuthenticated, error }) {
@@ -179,7 +187,7 @@ function ListingForm({ onSubmit, communes, zones, disabled }) {
   );
 }
 
-function ListingsTable({ listings, onPublish, onDelete, loading }) {
+function ListingsTable({ listings, onPublish, onReject, onDelete, loading }) {
   if (loading) return <p>Chargement des annonces…</p>;
   if (!listings.length) return <p>Aucune annonce pour le moment.</p>;
 
@@ -201,14 +209,21 @@ function ListingsTable({ listings, onPublish, onDelete, loading }) {
           {listings.map((listing) => (
             <tr key={listing.id}>
               <td>{listing.title}</td>
-              <td style={{ textAlign: 'center' }}>{listing.status}</td>
+              <td style={{ textAlign: 'center' }}>{STATUS_LABELS[listing.status] || listing.status}</td>
               <td style={{ textAlign: 'center' }}>{listing.price}</td>
               <td style={{ textAlign: 'center' }}>{listing.commune?.name || '—'}</td>
               <td style={{ textAlign: 'center' }}>{listing.zone?.name || '—'}</td>
               <td style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                <button type="button" className="button-primary" onClick={() => onPublish(listing.id)}>
-                  Publier
-                </button>
+                {listing.status !== 'PUBLISHED' ? (
+                  <button type="button" className="button-primary" onClick={() => onPublish(listing.id)}>
+                    Publier
+                  </button>
+                ) : null}
+                {listing.status !== 'REJECTED' ? (
+                  <button type="button" className="button-secondary" onClick={() => onReject(listing.id)}>
+                    Rejeter
+                  </button>
+                ) : null}
                 <button type="button" className="button-secondary" onClick={() => onDelete(listing.id)}>
                   Supprimer
                 </button>
@@ -229,6 +244,7 @@ export default function AdminWorkspace() {
   const [communes, setCommunes] = useState([]);
   const [zones, setZones] = useState([]);
   const [actionMessage, setActionMessage] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     const stored = loadStoredAdminToken();
@@ -240,12 +256,12 @@ export default function AdminWorkspace() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
-    fetchAdminListings(token).then(({ results, error }) => {
+    fetchAdminListings(token, statusFilter ? { status: statusFilter } : {}).then(({ results, error }) => {
       setListings(results || []);
       setActionMessage(error || '');
       setLoading(false);
     });
-  }, [token]);
+  }, [token, statusFilter]);
 
   const handleAuthenticated = (newToken, error) => {
     if (error) {
@@ -283,6 +299,19 @@ export default function AdminWorkspace() {
     setLoading(false);
   };
 
+  const handleReject = async (id) => {
+    setLoading(true);
+    const { listing, error } = await rejectListing(token, id);
+    if (error) {
+      setActionMessage(error);
+      setLoading(false);
+      return;
+    }
+    setListings((current) => current.map((item) => (item.id === id ? listing : item)));
+    setActionMessage('Annonce rejetée.');
+    setLoading(false);
+  };
+
   const handleDelete = async (id) => {
     setLoading(true);
     const { error } = await deleteListing(token, id);
@@ -316,15 +345,38 @@ export default function AdminWorkspace() {
               Gestion des annonces, publication et suppression (selon rôle). Les permissions finales sont appliquées côté API.
             </p>
           </div>
-          <button type="button" className="button-secondary" onClick={handleLogout}>
-            Se déconnecter
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <label htmlFor="statusFilter" style={{ margin: 0 }}>
+              Statut
+            </label>
+            <select
+              id="statusFilter"
+              name="statusFilter"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="">Tous</option>
+              <option value="DRAFT">Brouillon</option>
+              <option value="PENDING">En attente</option>
+              <option value="PUBLISHED">Publié</option>
+              <option value="REJECTED">Rejeté</option>
+            </select>
+            <button type="button" className="button-secondary" onClick={handleLogout}>
+              Se déconnecter
+            </button>
+          </div>
         </div>
         <ListingForm onSubmit={handleCreateListing} communes={communes} zones={zones} disabled={loading} />
-        <ListingsTable listings={listings} onPublish={handlePublish} onDelete={handleDelete} loading={loading} />
+        <ListingsTable
+          listings={listings}
+          onPublish={handlePublish}
+          onReject={handleReject}
+          onDelete={handleDelete}
+          loading={loading}
+        />
       </div>
     );
-  }, [token, loginError, communes, zones, listings, loading]);
+  }, [token, loginError, communes, zones, listings, loading, statusFilter]);
 
   return (
     <div style={{ display: 'grid', gap: '1rem' }}>
