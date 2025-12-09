@@ -68,14 +68,32 @@ export function clearAdminToken() {
 export async function fetchListings(params = {}) {
   const url = buildUrl('/listings', {
     ...params,
+    page: sanitizeNumber(params.page),
+    page_size: sanitizeNumber(params.page_size),
     price_min: sanitizeNumber(params.price_min),
     price_max: sanitizeNumber(params.price_max),
   });
   const data = await fetchJson(url);
   if (!data) {
-    return { results: [], error: 'Impossible de récupérer les annonces.' };
+    return {
+      results: [],
+      total: 0,
+      page: params.page || 1,
+      pageSize: params.page_size,
+      error: 'Impossible de récupérer les annonces.',
+    };
   }
-  return { results: data.results || data, error: null };
+
+  const results = data.results || data;
+  const total = typeof data.count === 'number' ? data.count : results.length;
+
+  return {
+    results,
+    total,
+    page: params.page || 1,
+    pageSize: params.page_size,
+    error: null,
+  };
 }
 
 export async function fetchListingDetail(id) {

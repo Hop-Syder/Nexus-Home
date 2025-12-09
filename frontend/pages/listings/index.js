@@ -18,11 +18,20 @@ const DEFAULT_FILTERS = {
   price_max: '',
   is_meuble: '',
   duree: '',
+  page: '1',
 };
+
+const PAGE_SIZE = 10;
 
 function normalizeQueryValue(value) {
   if (Array.isArray(value)) return value[0];
   return value ?? '';
+}
+
+function normalizePage(rawPage) {
+  const parsed = Number(rawPage);
+  if (Number.isNaN(parsed) || parsed < 1) return 1;
+  return parsed;
 }
 
 function normalizeFiltersFromQuery(query = {}) {
@@ -36,6 +45,7 @@ function normalizeFiltersFromQuery(query = {}) {
     price_max: normalizeQueryValue(query.price_max),
     is_meuble: normalizeQueryValue(query.is_meuble),
     duree: normalizeQueryValue(query.duree),
+    page: String(normalizePage(normalizeQueryValue(query.page) || 1)),
   };
 }
 
@@ -56,18 +66,25 @@ export default function ListingsPage() {
   const [zoneSuggestions, setZoneSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   // Memoized key to avoid reruns when router query is unchanged textually.
   const queryKey = useMemo(() => router.asPath, [router.asPath]);
 
-  const loadListings = async (activeFilters) => {
+  const loadListings = async (activeFilters, activePage) => {
     setLoading(true);
     setError(null);
-    const { results, error: fetchError } = await fetchListings(activeFilters);
+    const { results, total, error: fetchError } = await fetchListings({
+      ...activeFilters,
+      page: activePage,
+      page_size: PAGE_SIZE,
+    });
     if (fetchError) {
       setError(fetchError);
     }
     setListings(results || []);
+    setTotalItems(typeof total === 'number' ? total : results.length);
     setLoading(false);
   };
 
@@ -79,8 +96,10 @@ export default function ListingsPage() {
   useEffect(() => {
     if (!router.isReady) return;
     const nextFilters = normalizeFiltersFromQuery(router.query);
+    const nextPage = normalizePage(normalizeQueryValue(router.query.page));
     setFilters(nextFilters);
-    loadListings(nextFilters);
+    setPage(nextPage);
+    loadListings(nextFilters, nextPage);
   }, [router.isReady, queryKey]);
 
   const handleZoneSearch = async (query) => {
@@ -95,9 +114,21 @@ export default function ListingsPage() {
   const handleApplyFilters = (nextFilters) => {
     const normalizedFilters = { ...DEFAULT_FILTERS, ...nextFilters };
     setFilters(normalizedFilters);
-    const query = buildQueryFromFilters(normalizedFilters);
+    const query = buildQueryFromFilters({ ...normalizedFilters, page: '1' });
+    setPage(1);
     router.replace({ pathname: '/listings', query }, undefined, { shallow: true });
   };
+
+  const handlePageChange = (nextPage) => {
+    const safePage = normalizePage(nextPage);
+    setPage(safePage);
+    const query = buildQueryFromFilters({ ...filters, page: String(safePage) });
+    router.replace({ pathname: '/listings', query }, undefined, { shallow: true });
+  };
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  const canGoPrev = page > 1;
+  const canGoNext = page < totalPages;
 
   return (
     <div style={{ display: 'grid', gap: '1rem' }}>
@@ -130,6 +161,34 @@ export default function ListingsPage() {
               </p>
             </div>
           ) : null}
+          <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <strong>Page {page}</strong>
+              <span style={{ color: 'var(--text-muted)', marginLeft: '0.5rem' }}>
+                {totalItems} résultat(s) · {totalPages} page(s)
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={!canGoPrev}
+                aria-label="Page précédente"
+              >
+                ← Précédent
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={!canGoNext}
+                aria-label="Page suivante"
+              >
+                Suivant →
+              </button>
+            </div>
+          </div>
           <div className="grid grid-2">
             {listings.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />

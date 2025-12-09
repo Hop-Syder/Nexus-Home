@@ -1,6 +1,7 @@
 /**
  * Layout shell shared across pages to keep navigation, theme switch, and footer consistent.
  */
+import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
 
 export default function Layout({ children }) {
@@ -14,6 +15,11 @@ export default function Layout({ children }) {
               <p style={{ margin: 0, color: 'var(--text-muted)' }}>
                 Trouvez ou gérez vos annonces en quelques clics, confort matin/soir.
               </p>
+              <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                <Link href="/">Accueil</Link>
+                <Link href="/listings">Annonces</Link>
+                <Link href="/help">Aide</Link>
+              </nav>
             </div>
             <ThemeToggle />
           </div>
